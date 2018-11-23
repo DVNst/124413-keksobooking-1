@@ -9,11 +9,6 @@ var AVATAR_URL_EXTENSION = '.png'; // аватарка от 01 до 08
 
 var OFFER_TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
 
-var LOCATION_X_MIN = 100; // Для адреса предложения. Строка. Например address = '600, 350'
-var LOCATION_X_MAX = 10000;
-var LOCATION_Y_MIN = 100;
-var LOCATION_Y_MAX = 10000;
-
 var PRICE_MIN = 1000; // цена от 1000 до 1000000
 var PRICE_MAX = 1000000;
 
@@ -28,7 +23,7 @@ var GUESTS_MAX = 10;
 var CHECKINS = ['12:00', '13:00', '14:00'];
 var CHECKOUTS = ['12:00', '13:00', '14:00'];
 
-var ADVANTAGES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
@@ -41,7 +36,6 @@ var mapPins = map.querySelector('.map__pins');
 
 var pinXMax = mapPins.offsetWidth; // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
-var i;
 var ads = [];
 
 var getRandomNumber = function (min, max) {
@@ -59,7 +53,7 @@ var generateArrayNumber = function (min, max) {
 
   var arr = [];
 
-  for (i = min; i <= max; i++) {
+  for (var i = min; i <= max; i++) {
     arr.push(i);
   }
   return arr;
@@ -68,7 +62,7 @@ var generateArrayNumber = function (min, max) {
 var getArrayMixPart = function (arr, length) {
   var arrMix = [];
 
-  for (i = 0; i < length; i++) {
+  for (var i = 0; i < length; i++) {
     var index = getRandomNumber(0, arr.length - 1);
     arrMix.push(arr[index]);
     arr.splice(index, 1);
@@ -81,33 +75,38 @@ var getArrayMix = function (arr) {
   return getArrayMixPart(arr, arr.length);
 };
 
+var generateAds = function (i) {
+  var locationX = getRandomNumber(PIN_X_MIN, pinXMax);
+  var locationY = getRandomNumber(PIN_Y_MIN, PIN_Y_MAX);
+
+  return {
+    'author': {
+      'avatar': AVATAR_URL + avatarIndices[i] + AVATAR_URL_EXTENSION
+    },
+    'offer': {
+      'title': getRandomArrayElement(OFFER_TITLES),
+      'address': '' + locationX + ', ' + locationY,
+      'price': getRandomNumber(PRICE_MIN, PRICE_MAX),
+      'type': getRandomArrayElement(TYPES),
+      'rooms': getRandomNumber(ROOMS_MIN, ROOMS_MAX),
+      'guests': getRandomNumber(GUESTS_MIN, GUESTS_MAX),
+      'checkin': getRandomArrayElement(CHECKINS),
+      'checkout': getRandomArrayElement(CHECKOUTS),
+      'features': getArrayMixPart(FEATURES.slice(), getRandomNumber(1, FEATURES.length)),
+      'description': '',
+      'photos': getArrayMix(PHOTOS.slice())
+    },
+    'location': {
+      'x': locationX,
+      'y': locationY
+    }
+  };
+};
+
 var avatarIndices = getArrayMix(generateArrayNumber(AVATAR_URL_MIN, AVATAR_URL_MAX));
 
-for (i = 0; i < ADS_QUANTITY; i++) {
-  ads.push(
-      {
-        'author': {
-          'avatar': AVATAR_URL + avatarIndices[i] + AVATAR_URL_EXTENSION
-        },
-        'offer': {
-          'title': getRandomArrayElement(OFFER_TITLES),
-          'address': '' + getRandomNumber(LOCATION_X_MIN, LOCATION_X_MAX) + ', ' + getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX),
-          'price': getRandomNumber(PRICE_MIN, PRICE_MAX),
-          'type': getRandomArrayElement(TYPES),
-          'rooms': getRandomNumber(ROOMS_MIN, ROOMS_MAX),
-          'guests': getRandomNumber(GUESTS_MIN, GUESTS_MAX),
-          'checkin': getRandomArrayElement(CHECKINS),
-          'checkout': getRandomArrayElement(CHECKOUTS),
-          'features': getArrayMixPart(ADVANTAGES.slice(), getRandomNumber(1, ADVANTAGES.length)),
-          'description': '',
-          'photos': getArrayMix(PHOTOS.slice())
-        },
-        'location': {
-          'x': getRandomNumber(PIN_X_MIN, pinXMax),
-          'y': getRandomNumber(PIN_Y_MIN, PIN_Y_MAX)
-        }
-      }
-  );
+for (var i = 0; i < ADS_QUANTITY; i++) {
+  ads.push(generateAds(i));
 }
 
 map.classList.remove('map--faded');
