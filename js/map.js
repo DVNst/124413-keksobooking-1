@@ -42,6 +42,7 @@ var pinXMax = mapPins.offsetWidth; // max координата метки по X
 var ads = [];
 var avatarIndices;
 
+var mapFiltersContainer = document.querySelector('.map__filters-container');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
@@ -185,12 +186,13 @@ var renderMapCard = function (pin) {
   mapCardElement.querySelector('.popup__photos').innerHTML = getMapCardPhotos(mapCardElement.querySelector('.popup__photos').cloneNode(), pin).innerHTML;
 
   fragment.appendChild(mapCardElement);
+
   return fragment;
 };
 
 var pins = createAdsList();
 mapPins.appendChild(renderPins(pins));
-map.appendChild(renderMapCard(pins[0]));
+mapFiltersContainer.before(renderMapCard(pins[0]));
 map.classList.remove('map--faded');
 
 // console.log(pins[0]);
