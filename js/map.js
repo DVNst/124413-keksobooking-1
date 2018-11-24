@@ -30,6 +30,8 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 var PIN_Y_MIN = 130; // координата метки по Y от 130 до 630
 var PIN_Y_MAX = 630;
 var PIN_X_MIN = 0; // min координата метки по X
+var PIN_WIDTH = 50; // ширина метки
+var PIN_HEIGHT = 70; // высота метки
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
@@ -120,7 +122,7 @@ var renderPin = function (pin) {
   var pinElement = pinTemplate.cloneNode(true);
   var pinElementImg = pinElement.querySelector('img');
 
-  pinElement.style = 'left: ' + (pin.location.x - Math.round(pinElementImg.width / 2)) + 'px; top: ' + (pin.location.y - pinElementImg.height) + 'px;';
+  pinElement.style = 'left: ' + (pin.location.x - Math.round(PIN_WIDTH / 2)) + 'px; top: ' + (pin.location.y - PIN_HEIGHT) + 'px;';
   pinElementImg.src = pin.author.avatar;
   pinElementImg.alt = pin.offer.description;
 
@@ -138,7 +140,7 @@ var renderPins = function (pins) {
 };
 
 var pins = createAdsList();
-renderPins(pins);
+mapPins.appendChild(renderPins(pins));
 map.classList.remove('map--faded');
 
 // console.log(pins);
