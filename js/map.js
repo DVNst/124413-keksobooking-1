@@ -194,15 +194,3 @@ var pins = createAdsList();
 mapPins.appendChild(renderPins(pins));
 mapFiltersContainer.before(renderMapCard(pins[0]));
 map.classList.remove('map--faded');
-
-// console.log(pins[0]);
-// console.log('author:');
-// console.log(ads.map(function(a) {return a['author'];}));
-// console.log('offer:');
-// console.log(ads.map(function(a) {return a['offer'];}));
-// console.log('location:');
-// console.log(ads.map(function(a) {return a['location'];}));
-// console.log('offer.features:');
-// console.log(ads.map(function(a) {return a['offer'];}).map(function(a) {return a['features'];}));
-// console.log('offer.photos:');
-// console.log(ads.map(function(a) {return a['offer'];}).map(function(a) {return a['photos'];}));
