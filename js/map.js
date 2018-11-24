@@ -37,6 +37,9 @@ var mapPins = map.querySelector('.map__pins');
 var pinXMax = mapPins.offsetWidth; // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
 var ads = [];
+var avatarIndices;
+
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 var getRandomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -103,14 +106,42 @@ var generateAds = function (i) {
   };
 };
 
-var avatarIndices = getArrayMix(generateArrayNumber(AVATAR_URL_MIN, AVATAR_URL_MAX));
+var createAdsList = function () {
+  avatarIndices = getArrayMix(generateArrayNumber(AVATAR_URL_MIN, AVATAR_URL_MAX));
 
-for (var i = 0; i < ADS_QUANTITY; i++) {
-  ads.push(generateAds(i));
-}
+  for (var i = 0; i < ADS_QUANTITY; i++) {
+    ads.push(generateAds(i));
+  }
 
+  return ads;
+};
+
+var renderPin = function (pin) {
+  var pinElement = pinTemplate.cloneNode(true);
+  var pinElementImg = pinElement.querySelector('img');
+
+  pinElement.style = 'left: ' + (pin.location.x - Math.round(pinElementImg.width / 2)) + 'px; top: ' + (pin.location.y - pinElementImg.height) + 'px;';
+  pinElementImg.src = pin.author.avatar;
+  pinElementImg.alt = pin.offer.description;
+
+  return pinElement;
+};
+
+var renderPins = function (pins) {
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < pins.length; i++) {
+    fragment.appendChild(renderPin(pins[i]));
+  }
+
+  return fragment;
+};
+
+var pins = createAdsList();
+renderPins(pins);
 map.classList.remove('map--faded');
 
+// console.log(pins);
 // console.log('author:');
 // console.log(ads.map(function(a) {return a['author'];}));
 // console.log('offer:');
