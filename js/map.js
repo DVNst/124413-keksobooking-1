@@ -141,30 +141,34 @@ var renderPins = function (pins) {
   return fragment;
 };
 
-var getMapCardFeatures = function (features, pin) {
-  for (var i = 0; i < pin.offer.features.length; i++) {
-    var fragment = document.createElement('li');
-    fragment.className = 'popup__feature' + ' popup__feature--' + pin.offer.features[i];
+var getMapCardFeatures = function (pin) {
+  var fragment = document.createDocumentFragment();
 
-    features.appendChild(fragment);
+  for (var i = 0; i < pin.offer.features.length; i++) {
+    var feature = document.createElement('li');
+    feature.className = 'popup__feature' + ' popup__feature--' + pin.offer.features[i];
+
+    fragment.appendChild(feature);
   }
 
-  return features;
+  return fragment;
 };
 
-var getMapCardPhotos = function (photo, pin) {
-  for (var i = 0; i < pin.offer.photos.length; i++) {
-    var fragment = document.createElement('img');
-    fragment.src = pin.offer.photos[i];
-    fragment.className = 'popup__photo';
-    fragment.width = '45';
-    fragment.height = '40';
-    fragment.alt = 'Фотография жилья';
+var getMapCardPhotos = function (pin) {
+  var fragment = document.createDocumentFragment();
 
-    photo.appendChild(fragment);
+  for (var i = 0; i < pin.offer.photos.length; i++) {
+    var image = document.createElement('img');
+    image.src = pin.offer.photos[i];
+    image.className = 'popup__photo';
+    image.width = '45';
+    image.height = '40';
+    image.alt = 'Фотография жилья';
+
+    fragment.appendChild(image);
   }
 
-  return photo;
+  return fragment;
 };
 
 var renderMapCard = function (pin) {
@@ -179,11 +183,13 @@ var renderMapCard = function (pin) {
   mapCardElement.querySelector('.popup__text--capacity').textContent = pin.offer.rooms + ' комнаты для ' + pin.offer.guests + ' гостей';
   mapCardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
 
-  mapCardElement.querySelector('.popup__features').innerHTML = getMapCardFeatures(mapCardElement.querySelector('.popup__features').cloneNode(), pin).innerHTML;
+  mapCardElement.querySelector('.popup__features').innerHTML = '';
+  mapCardElement.querySelector('.popup__features').appendChild(getMapCardFeatures(pin));
 
   mapCardElement.querySelector('.popup__description').textContent = pin.offer.description;
 
-  mapCardElement.querySelector('.popup__photos').innerHTML = getMapCardPhotos(mapCardElement.querySelector('.popup__photos').cloneNode(), pin).innerHTML;
+  mapCardElement.querySelector('.popup__photos').innerHTML = '';
+  mapCardElement.querySelector('.popup__photos').appendChild(getMapCardPhotos(pin));
 
   fragment.appendChild(mapCardElement);
 
