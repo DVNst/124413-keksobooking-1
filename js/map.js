@@ -36,17 +36,18 @@ var PIN_HEIGHT = 70; // высота метки
 // var PIN_MAIN_HEIGHT = 62; // высота главной метки
 var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной метки
 
+var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
 var mapPinMain = mapPins.querySelector('.map__pin--main');
 
-var pinXMin = 0 + Math.round(PIN_WIDTH / 2); // min координата метки по X
+var pinXMin = Math.round(PIN_WIDTH / 2); // min координата метки по X
 var pinXMax = mapPins.offsetWidth - Math.round(PIN_WIDTH / 2); // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
-var activePage = false;
 var ads = [];
+var ad;
 var avatarIndices;
 
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -145,7 +146,19 @@ var renderPin = function (pin) {
   pinElement.querySelector('img').alt = pin.offer.description;
 
   pinElement.addEventListener('click', function () {
+    if (pinElement === ad) {
+      return;
+    }
+
+    if (ad) {
+      ad.classList.remove('map__pin--active');
+      ad.style.cursor = 'pointer';
+    }
+
     mapFiltersContainer.before(renderMapCard(pin));
+    ad = pinElement;
+    ad.classList.add('map__pin--active');
+    ad.style.cursor = 'default';
   });
 
   return pinElement;
@@ -193,8 +206,15 @@ var getMapCardPhotos = function (pin) {
 
 var renderMapCard = function (pin, cloneNode) {
   var fragment = document.createDocumentFragment();
-  var mapCardElement = (cloneNode) ? mapCardTemplate.cloneNode(true) : popup;
-  mapCardElement.classList.remove('hidden');
+  var mapCardElement;
+
+  if (cloneNode) {
+    mapCardElement = mapCardTemplate.cloneNode(true);
+  } else {
+    mapCardElement = popup;
+    popup.classList.remove('hidden');
+    document.addEventListener('keydown', onPopupEscPress);
+  }
 
   mapCardElement.querySelector('.popup__avatar').src = pin.author.avatar;
   mapCardElement.querySelector('.popup__title').textContent = pin.offer.title;
@@ -231,45 +251,52 @@ var disabledFilters = function (disabled) {
 
 var addAddress = function (extraHeight) {
   extraHeight = extraHeight || 0;
-  adFormAddress.value = '' + (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
+  adFormAddress.value = (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
 };
 
 var closePopup = function () {
   popup.classList.add('hidden');
+  ad.classList.remove('map__pin--active');
+  document.removeEventListener('keydown', onPopupEscPress);
 };
 
-disabledFilters(true);
-addAddress();
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
 
-mapPinMain.addEventListener('mouseup', function () {
+var onMapPinMainMouseUp = function () {
   disabledFilters(false);
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
 
   addAddress(PIN_MAIN_ARROW_HEIGHT);
 
-  if (!activePage) {
-    ads = createAdsList();
-    mapPins.appendChild(renderPins(ads));
+  ads = createAdsList();
+  mapPins.appendChild(renderPins(ads));
 
-    popup = renderMapCard(ads[0], true);
-    popup.children[0].classList.add('hidden');
-    mapFiltersContainer.before(popup);
+  popup = renderMapCard(ads[0], true);
+  popup.children[0].classList.add('hidden');
+  mapFiltersContainer.before(popup);
 
-    popup = document.querySelector('.map__card, .popup');
-    popupClose = popup.querySelector('.popup__close');
+  popup = document.querySelector('.map__card, .popup');
+  popupClose = popup.querySelector('.popup__close');
 
-    popupClose.addEventListener('click', function () {
+  popupClose.addEventListener('click', function () {
+    closePopup();
+  });
+
+  popupClose.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
       closePopup();
-    });
+    }
+  });
 
-    popupClose.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === ENTER_KEYCODE) {
-        closePopup();
-      }
-    });
+  mapPinMain.removeEventListener('mouseup', onMapPinMainMouseUp);
+};
 
-    activePage = true;
-  }
-});
+mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
 
+disabledFilters(true);
+addAddress();
