@@ -36,15 +36,21 @@ var PIN_HEIGHT = 70; // высота метки
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
+var mapPinsMain = mapPins.querySelector('.map__pin--main');
 
 var pinXMax = mapPins.offsetWidth; // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
 var ads = [];
 var avatarIndices;
 
-var mapFiltersContainer = document.querySelector('.map__filters-container');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+
+var mapFiltersContainer = document.querySelector('.map__filters-container');
+var mapFilter = mapFiltersContainer.querySelectorAll('.map__filter');
+var mapFilterFieldset = mapFiltersContainer.querySelectorAll('fieldset');
+var adForm = document.querySelector('.ad-form');
+var adFormFieldset = adForm.querySelectorAll('fieldset');
 
 var getRandomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -196,7 +202,27 @@ var renderMapCard = function (pin) {
   return fragment;
 };
 
+var addDisabled = function (filters, disabled) {
+  for (var i = 0; i < filters.length; i++) {
+    filters[i].disabled = disabled;
+  }
+};
+
+var disabledFilters = function (disabled) {
+  addDisabled(mapFilter, disabled);
+  addDisabled(mapFilterFieldset, disabled);
+  addDisabled(adFormFieldset, disabled);
+};
+
 var pins = createAdsList();
-mapPins.appendChild(renderPins(pins));
-mapFiltersContainer.before(renderMapCard(pins[0]));
-map.classList.remove('map--faded');
+// mapPins.appendChild(renderPins(pins));
+// mapFiltersContainer.before(renderMapCard(pins[0]));
+// map.classList.remove('map--faded');
+
+disabledFilters(true);
+
+mapPinsMain.addEventListener('mouseup', function () {
+  disabledFilters(false);
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+});
