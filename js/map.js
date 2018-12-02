@@ -33,10 +33,13 @@ var PIN_Y_MAX = 630;
 var PIN_X_MIN = 0; // min координата метки по X
 var PIN_WIDTH = 50; // ширина метки
 var PIN_HEIGHT = 70; // высота метки
+var PIN_MAIN_WIDTH = 62; // ширина главной метки
+var PIN_MAIN_HEIGHT = 62; // высота главной метки
+var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной метки
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
-var mapPinsMain = mapPins.querySelector('.map__pin--main');
+var mapPinMain = mapPins.querySelector('.map__pin--main');
 
 var pinXMax = mapPins.offsetWidth; // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
@@ -51,6 +54,7 @@ var mapFilter = mapFiltersContainer.querySelectorAll('.map__filter');
 var mapFilterFieldset = mapFiltersContainer.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
 var adFormFieldset = adForm.querySelectorAll('fieldset');
+var adFormAddress = adForm.querySelector('#address');
 
 var getRandomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -214,15 +218,22 @@ var disabledFilters = function (disabled) {
   addDisabled(adFormFieldset, disabled);
 };
 
-var pins = createAdsList();
+var addAddress = function (extraHeight) {
+  extraHeight = extraHeight || 0;
+  adFormAddress.value = '' + (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
+};
+
+// var pins = createAdsList();
 // mapPins.appendChild(renderPins(pins));
 // mapFiltersContainer.before(renderMapCard(pins[0]));
 // map.classList.remove('map--faded');
 
 disabledFilters(true);
+addAddress();
 
-mapPinsMain.addEventListener('mouseup', function () {
+mapPinMain.addEventListener('mouseup', function () {
   disabledFilters(false);
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
+  addAddress(PIN_MAIN_ARROW_HEIGHT);
 });
