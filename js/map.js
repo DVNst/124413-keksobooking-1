@@ -47,7 +47,7 @@ var pinXMin = Math.round(PIN_WIDTH / 2); // min координата метки 
 var pinXMax = mapPins.offsetWidth - Math.round(PIN_WIDTH / 2); // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
 var ads = [];
-var ad;
+var currentAdsItem;
 var avatarIndices;
 
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -138,6 +138,11 @@ var createAdsList = function () {
   return adsArray;
 };
 
+var recoveryСurrentAdsItem = function () {
+  currentAdsItem.classList.remove('map__pin--active');
+  currentAdsItem.style.cursor = 'pointer';
+};
+
 var renderPin = function (pin) {
   var pinElement = pinTemplate.cloneNode(true);
 
@@ -146,19 +151,18 @@ var renderPin = function (pin) {
   pinElement.querySelector('img').alt = pin.offer.description;
 
   pinElement.addEventListener('click', function () {
-    if (pinElement === ad) {
+    if (pinElement === currentAdsItem) {
       return;
     }
 
-    if (ad) {
-      ad.classList.remove('map__pin--active');
-      ad.style.cursor = 'pointer';
+    if (currentAdsItem) {
+      recoveryСurrentAdsItem();
     }
 
     mapFiltersContainer.before(renderMapCard(pin));
-    ad = pinElement;
-    ad.classList.add('map__pin--active');
-    ad.style.cursor = 'default';
+    currentAdsItem = pinElement;
+    currentAdsItem.classList.add('map__pin--active');
+    currentAdsItem.style.cursor = 'default';
   });
 
   return pinElement;
@@ -256,7 +260,8 @@ var addAddress = function (extraHeight) {
 
 var closePopup = function () {
   popup.classList.add('hidden');
-  ad.classList.remove('map__pin--active');
+  recoveryСurrentAdsItem();
+  currentAdsItem = null;
   document.removeEventListener('keydown', onPopupEscPress);
 };
 
