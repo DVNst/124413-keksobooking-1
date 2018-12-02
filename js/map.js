@@ -30,21 +30,37 @@ var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.g
 
 var PIN_Y_MIN = 130; // координата метки по Y от 130 до 630
 var PIN_Y_MAX = 630;
-var PIN_X_MIN = 0; // min координата метки по X
 var PIN_WIDTH = 50; // ширина метки
 var PIN_HEIGHT = 70; // высота метки
+// var PIN_MAIN_WIDTH = 62; // ширина главной метки
+// var PIN_MAIN_HEIGHT = 62; // высота главной метки
+var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной метки
+
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
+var mapPinMain = mapPins.querySelector('.map__pin--main');
 
-var pinXMax = mapPins.offsetWidth; // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
+var pinXMin = Math.round(PIN_WIDTH / 2); // min координата метки по X
+var pinXMax = mapPins.offsetWidth - Math.round(PIN_WIDTH / 2); // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
 var ads = [];
+var currentAdsItem;
 var avatarIndices;
 
-var mapFiltersContainer = document.querySelector('.map__filters-container');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var popup;
+var popupClose;
+
+var mapFiltersContainer = document.querySelector('.map__filters-container');
+var mapFilter = mapFiltersContainer.querySelectorAll('.map__filter');
+var mapFilterFieldset = mapFiltersContainer.querySelectorAll('fieldset');
+var adForm = document.querySelector('.ad-form');
+var adFormFieldset = adForm.querySelectorAll('fieldset');
+var adFormAddress = adForm.querySelector('#address');
 
 var getRandomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -84,7 +100,7 @@ var getShuffledArray = function (arr, length) {
 };
 
 var generateAds = function (i) {
-  var locationX = getRandomNumber(PIN_X_MIN, pinXMax);
+  var locationX = getRandomNumber(pinXMin, pinXMax);
   var locationY = getRandomNumber(PIN_Y_MIN, PIN_Y_MAX);
 
   return {
@@ -113,12 +129,18 @@ var generateAds = function (i) {
 
 var createAdsList = function () {
   avatarIndices = getShuffledArray(generateArrayNumber(AVATAR_URL_MIN, AVATAR_URL_MAX));
+  var adsArray = [];
 
   for (var i = 0; i < ADS_QUANTITY; i++) {
-    ads.push(generateAds(i));
+    adsArray.push(generateAds(i));
   }
 
-  return ads;
+  return adsArray;
+};
+
+var recoveryСurrentAdsItem = function () {
+  currentAdsItem.classList.remove('map__pin--active');
+  currentAdsItem.style.cursor = 'pointer';
 };
 
 var renderPin = function (pin) {
@@ -127,6 +149,21 @@ var renderPin = function (pin) {
   pinElement.style = 'left: ' + (pin.location.x - Math.round(PIN_WIDTH / 2)) + 'px; top: ' + (pin.location.y - PIN_HEIGHT) + 'px;';
   pinElement.querySelector('img').src = pin.author.avatar;
   pinElement.querySelector('img').alt = pin.offer.description;
+
+  pinElement.addEventListener('click', function () {
+    if (pinElement === currentAdsItem) {
+      return;
+    }
+
+    if (currentAdsItem) {
+      recoveryСurrentAdsItem();
+    }
+
+    mapFiltersContainer.before(renderMapCard(pin));
+    currentAdsItem = pinElement;
+    currentAdsItem.classList.add('map__pin--active');
+    currentAdsItem.style.cursor = 'default';
+  });
 
   return pinElement;
 };
@@ -171,9 +208,17 @@ var getMapCardPhotos = function (pin) {
   return fragment;
 };
 
-var renderMapCard = function (pin) {
+var renderMapCard = function (pin, cloneNode) {
   var fragment = document.createDocumentFragment();
-  var mapCardElement = mapCardTemplate.cloneNode(true);
+  var mapCardElement;
+
+  if (cloneNode) {
+    mapCardElement = mapCardTemplate.cloneNode(true);
+  } else {
+    mapCardElement = popup;
+    popup.classList.remove('hidden');
+    document.addEventListener('keydown', onPopupEscPress);
+  }
 
   mapCardElement.querySelector('.popup__avatar').src = pin.author.avatar;
   mapCardElement.querySelector('.popup__title').textContent = pin.offer.title;
@@ -196,7 +241,67 @@ var renderMapCard = function (pin) {
   return fragment;
 };
 
-var pins = createAdsList();
-mapPins.appendChild(renderPins(pins));
-mapFiltersContainer.before(renderMapCard(pins[0]));
-map.classList.remove('map--faded');
+var addDisabled = function (filters, disabled) {
+  for (var i = 0; i < filters.length; i++) {
+    filters[i].disabled = disabled;
+  }
+};
+
+var disabledFilters = function (disabled) {
+  addDisabled(mapFilter, disabled);
+  addDisabled(mapFilterFieldset, disabled);
+  addDisabled(adFormFieldset, disabled);
+};
+
+var addAddress = function (extraHeight) {
+  extraHeight = extraHeight || 0;
+  adFormAddress.value = (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
+};
+
+var closePopup = function () {
+  popup.classList.add('hidden');
+  recoveryСurrentAdsItem();
+  currentAdsItem = null;
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+var onPopupEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closePopup();
+  }
+};
+
+var onMapPinMainMouseUp = function () {
+  disabledFilters(false);
+  map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
+
+  addAddress(PIN_MAIN_ARROW_HEIGHT);
+
+  ads = createAdsList();
+  mapPins.appendChild(renderPins(ads));
+
+  popup = renderMapCard(ads[0], true);
+  popup.children[0].classList.add('hidden');
+  mapFiltersContainer.before(popup);
+
+  popup = document.querySelector('.map__card, .popup');
+  popupClose = popup.querySelector('.popup__close');
+
+  popupClose.addEventListener('click', function () {
+    closePopup();
+  });
+
+  popupClose.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      closePopup();
+    }
+  });
+
+  mapPinMain.removeEventListener('mouseup', onMapPinMainMouseUp);
+};
+
+mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
+
+disabledFilters(true);
+addAddress();
