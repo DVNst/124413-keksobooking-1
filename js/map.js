@@ -61,6 +61,12 @@ var mapFilterFieldset = mapFiltersContainer.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
 var adFormFieldset = adForm.querySelectorAll('fieldset');
 var adFormAddress = adForm.querySelector('#address');
+var adFormRoomNumber = adForm.querySelector('#room_number');
+var adFormCapacity = adForm.querySelector('#capacity');
+var adFormType = adForm.querySelector('#type');
+var adFormPrice = adForm.querySelector('#price');
+var adFormTimeIn = adForm.querySelector('#timein');
+var adFormTimeOut = adForm.querySelector('#timeout');
 
 var getRandomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -300,6 +306,61 @@ var onMapPinMainMouseUp = function () {
 
   mapPinMain.removeEventListener('mouseup', onMapPinMainMouseUp);
 };
+
+var validationAdFormCapacity = function () {
+  for (var i = 0; i < adFormCapacity.length; i++) {
+    if
+    ((i > adFormRoomNumber.selectedIndex) ||
+    ((i < adFormRoomNumber.selectedIndex) && (adFormRoomNumber.value === 100))) {
+      adFormCapacity[i].disabled = true;
+    } else {
+      adFormCapacity[i].disabled = false;
+    }
+  }
+
+  if
+  ((adFormCapacity.selectedIndex > adFormRoomNumber.selectedIndex) ||
+  ((adFormCapacity.selectedIndex !== adFormRoomNumber.selectedIndex) && (adFormRoomNumber.value === 100))) {
+    adFormCapacity.selectedIndex = -1;
+  }
+};
+
+var validationAdFormPrice = function () {
+  var min = 0;
+  switch (adFormType[adFormType.selectedIndex].value) {
+    case 'bungalo':
+      min = 0;
+      break;
+    case 'flat':
+      min = 1000;
+      break;
+    case 'house':
+      min = 5000;
+      break;
+    case 'palace':
+      min = 10000;
+      break;
+  }
+  adFormPrice.placeholder = min;
+  adFormPrice.min = min;
+};
+
+var validationAdFormTimeIn = function () {
+  adFormTimeOut.selectedIndex = adFormTimeIn.selectedIndex;
+};
+
+var validationAdFormTimeOut = function () {
+  adFormTimeIn.selectedIndex = adFormTimeOut.selectedIndex;
+};
+
+adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
+adFormType.addEventListener('input', validationAdFormPrice);
+adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
+adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
+validationAdFormCapacity();
+validationAdFormPrice();
+validationAdFormTimeIn();
+validationAdFormTimeOut();
 
 mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
 
