@@ -144,7 +144,7 @@ var createAdsList = function () {
   return adsArray;
 };
 
-var recoveryСurrentAdsItem = function () {
+var recoveryCurrentAdsItem = function () {
   currentAdsItem.classList.remove('map__pin--active');
   currentAdsItem.style.cursor = 'pointer';
 };
@@ -162,7 +162,7 @@ var renderPin = function (pin) {
     }
 
     if (currentAdsItem) {
-      recoveryСurrentAdsItem();
+      recoveryCurrentAdsItem();
     }
 
     mapFiltersContainer.before(renderMapCard(pin));
@@ -266,7 +266,7 @@ var addAddress = function (extraHeight) {
 
 var closePopup = function () {
   popup.classList.add('hidden');
-  recoveryСurrentAdsItem();
+  recoveryCurrentAdsItem();
   currentAdsItem = null;
   document.removeEventListener('keydown', onPopupEscPress);
 };
@@ -309,13 +309,9 @@ var onMapPinMainMouseUp = function () {
 
 var validationAdFormCapacity = function () {
   for (var i = 0; i < adFormCapacity.length; i++) {
-    if
+    adFormCapacity[i].disabled =
     ((i > adFormRoomNumber.selectedIndex) ||
-    ((i < adFormRoomNumber.selectedIndex) && (adFormRoomNumber.value === 100))) {
-      adFormCapacity[i].disabled = true;
-    } else {
-      adFormCapacity[i].disabled = false;
-    }
+    ((i < adFormRoomNumber.selectedIndex) && (adFormRoomNumber.value === 100)));
   }
 
   if
@@ -327,7 +323,7 @@ var validationAdFormCapacity = function () {
 
 var validationAdFormPrice = function () {
   var min = 0;
-  switch (adFormType[adFormType.selectedIndex].value) {
+  switch (adFormType.value) {
     case 'bungalo':
       min = 0;
       break;
@@ -357,6 +353,7 @@ adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
 adFormType.addEventListener('input', validationAdFormPrice);
 adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
 adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
+
 validationAdFormCapacity();
 validationAdFormPrice();
 validationAdFormTimeIn();
