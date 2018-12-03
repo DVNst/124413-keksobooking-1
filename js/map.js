@@ -146,7 +146,6 @@ var createAdsList = function () {
 
 var recoveryCurrentAdsItem = function () {
   currentAdsItem.classList.remove('map__pin--active');
-  currentAdsItem.style.cursor = 'pointer';
 };
 
 var renderPin = function (pin) {
@@ -168,7 +167,6 @@ var renderPin = function (pin) {
     mapFiltersContainer.before(renderMapCard(pin));
     currentAdsItem = pinElement;
     currentAdsItem.classList.add('map__pin--active');
-    currentAdsItem.style.cursor = 'default';
   });
 
   return pinElement;
