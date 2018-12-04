@@ -259,7 +259,7 @@ var disabledFilters = function (disabled) {
 
 var addAddress = function (extraHeight) {
   extraHeight = extraHeight || 0;
-  adFormAddress.value = (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
+  adFormAddress.value = (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ',' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
 };
 
 var closePopup = function () {
@@ -339,23 +339,17 @@ var validationAdFormPrice = function () {
   adFormPrice.min = min;
 };
 
-var validationAdFormTimeIn = function () {
-  adFormTimeOut.selectedIndex = adFormTimeIn.selectedIndex;
-};
-
-var validationAdFormTimeOut = function () {
-  adFormTimeIn.selectedIndex = adFormTimeOut.selectedIndex;
+var validationAdFormTimeInOut = function (evt) {
+  adFormTimeOut.selectedIndex = adFormTimeIn.selectedIndex = evt.target.selectedIndex;
 };
 
 adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
 adFormType.addEventListener('input', validationAdFormPrice);
-adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
-adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
+adFormTimeIn.addEventListener('input', validationAdFormTimeInOut);
+adFormTimeOut.addEventListener('input', validationAdFormTimeInOut);
 
 validationAdFormCapacity();
 validationAdFormPrice();
-validationAdFormTimeIn();
-validationAdFormTimeOut();
 
 mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
 
