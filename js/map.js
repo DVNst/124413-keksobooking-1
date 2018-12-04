@@ -259,7 +259,7 @@ var disabledFilters = function (disabled) {
 
 var addAddress = function (extraHeight) {
   extraHeight = extraHeight || 0;
-  adFormAddress.value = (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ',' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
+  adFormAddress.value = (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
 };
 
 var closePopup = function () {
