@@ -357,10 +357,10 @@ var validationAdFormPrice = function () {
 
 var validationAdFormTimeInOut = function (evt) {
   var adFormTimeInOut = (evt.target.id === 'timein') ? adFormTimeOut : adFormTimeIn;
-  var TimeInOut = (evt.target.id === 'timein') ? TIMEIN : TIMEOUT;
+  var timeInOut = (evt.target.id === 'timein') ? TIMEIN : TIMEOUT;
 
   for (var i = 0; i < adFormTimeInOut.length; i++) {
-    adFormTimeInOut[i].selected = (TimeInOut[evt.target.value] === adFormTimeInOut[i].value);
+    adFormTimeInOut[i].selected = (timeInOut[evt.target.value] === adFormTimeInOut[i].value);
   }
 };
 
