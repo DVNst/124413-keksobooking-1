@@ -324,11 +324,11 @@ var onMapPinMainMouseUp = function () {
 };
 
 var validationAdFormCapacity = function () {
-  for (var i = 0; i < adFormCapacity.length; i++) {
-    adFormCapacity[i].disabled = (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].indexOf(adFormCapacity[i].value) < 0);
+  adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
 
-    if (adFormCapacity[i].selected && adFormCapacity[i].disabled) {
-      adFormCapacity.selectedIndex = -1;
+  for (var i = 0; i < ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].length; i++) {
+    if (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value][i] === adFormCapacity.value) {
+      adFormCapacity.setCustomValidity('');
     }
   }
 };
@@ -368,6 +368,7 @@ var validationAdFormTimeOut = function (evt) {
 };
 
 adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
+adFormCapacity.addEventListener('input', validationAdFormCapacity);
 adFormType.addEventListener('input', validationAdFormPrice);
 adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
 adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
