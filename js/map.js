@@ -18,23 +18,29 @@ var TYPES_RUS = ['Дворец', 'Квартира', 'Дом', 'Бунгало']
 var ROOMS_MIN = 1; // комнаты от 1 до 5
 var ROOMS_MAX = 5;
 var ROOM_NUMBER_CAPACITY = {
-  '1' : ['1'],
-  '2' : ['1','2'],
-  '3' : ['1','2','3'],
-  '100' : ['0']
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0']
 };
 
 var GUESTS_MIN = 1; // случайное кол-во гостей
 var GUESTS_MAX = 10;
-var CAPACITY = {
-  '1' : 'для 1 гостя',
-  '2' : 'для 2 гостей',
-  '3' : 'для 3 гостей',
-  '0' : 'не для гостей'
-};
 
 var CHECKINS = ['12:00', '13:00', '14:00'];
 var CHECKOUTS = ['12:00', '13:00', '14:00'];
+
+var TIMEIN = {
+  '12:00': '12:00',
+  '13:00': '13:00',
+  '14:00': '14:00'
+};
+
+var TIMEOUT = {
+  '12:00': '12:00',
+  '13:00': '13:00',
+  '14:00': '14:00'
+};
 
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
@@ -319,41 +325,14 @@ var onMapPinMainMouseUp = function () {
 
 var validationAdFormCapacity = function () {
   if (adFormRoomNumber.value in ROOM_NUMBER_CAPACITY) {
-    //for (var i = 0; i < adFormCapacity.length; i++) {
-      //console.log(adFormCapacity[i].value);
-      //adFormCapacity[i].disabled = false;
-
-      //for (var k = 0; k < ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].length; k++) {
-        //if (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value][k] !== adFormCapacity[i].value) {
-        //  adFormCapacity[i].disabled = true;
-        //}
-      //}
-    //}
-  //}
-    console.log(ROOM_NUMBER_CAPACITY[adFormRoomNumber.value]);
-    console.log(adFormRoomNumber.value);
     for (var i = 0; i < adFormCapacity.length; i++) {
-      var index = adFormCapacity[i].value;
-      var roomss = ROOM_NUMBER_CAPACITY.adFormRoomNumber.value;
-      if (index in roomss) {
-        debugger;
-        console.log('ff');
-        console.log(adFormCapacity[i]);
+      adFormCapacity[i].disabled = (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].indexOf(adFormCapacity[i].value) < 0);
+
+      if (adFormCapacity[i].selected && adFormCapacity[i].disabled) {
+        adFormCapacity.selectedIndex = -1;
       }
     }
   }
-
-  //for (var i = 0; i < adFormCapacity.length; i++) {
-    //adFormCapacity[i].disabled =
-    //((i > adFormRoomNumber.selectedIndex) ||
-    //((i < adFormRoomNumber.selectedIndex) && (adFormRoomNumber.value === 100)));
-  //}
-
-  //if
-  //((adFormCapacity.selectedIndex > adFormRoomNumber.selectedIndex) ||
-  //((adFormCapacity.selectedIndex !== adFormRoomNumber.selectedIndex) && (adFormRoomNumber.value === 100))) {
-  //  adFormCapacity.selectedIndex = -1;
-  //}
 };
 
 var validationAdFormPrice = function () {
@@ -377,7 +356,12 @@ var validationAdFormPrice = function () {
 };
 
 var validationAdFormTimeInOut = function (evt) {
-  adFormTimeOut.selectedIndex = adFormTimeIn.selectedIndex = evt.target.selectedIndex;
+  var adFormTimeInOut = (evt.target.id === 'timein') ? adFormTimeOut : adFormTimeIn;
+  var TimeInOut = (evt.target.id === 'timein') ? TIMEIN : TIMEOUT;
+
+  for (var i = 0; i < adFormTimeInOut.length; i++) {
+    adFormTimeInOut[i].selected = (TimeInOut[evt.target.value] === adFormTimeInOut[i].value);
+  }
 };
 
 adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
