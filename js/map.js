@@ -355,19 +355,24 @@ var validationAdFormPrice = function () {
   adFormPrice.min = min;
 };
 
-var validationAdFormTimeInOut = function (evt) {
-  var adFormTimeInOut = (evt.target.id === 'timein') ? adFormTimeOut : adFormTimeIn;
-  var timeInOut = (evt.target.id === 'timein') ? TIMEIN : TIMEOUT;
-
+var validationAdFormTimeInOut = function (evt, adFormTimeInOut, timeInOut) {
   for (var i = 0; i < adFormTimeInOut.length; i++) {
     adFormTimeInOut[i].selected = (timeInOut[evt.target.value] === adFormTimeInOut[i].value);
   }
 };
 
+var validationAdFormTimeIn = function (evt) {
+  validationAdFormTimeInOut(evt, adFormTimeOut, TIMEIN);
+};
+
+var validationAdFormTimeOut = function (evt) {
+  validationAdFormTimeInOut(evt, adFormTimeIn, TIMEOUT);
+};
+
 adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
 adFormType.addEventListener('input', validationAdFormPrice);
-adFormTimeIn.addEventListener('input', validationAdFormTimeInOut);
-adFormTimeOut.addEventListener('input', validationAdFormTimeInOut);
+adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
+adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
 
 validationAdFormCapacity();
 validationAdFormPrice();
