@@ -324,13 +324,11 @@ var onMapPinMainMouseUp = function () {
 };
 
 var validationAdFormCapacity = function () {
-  if (adFormRoomNumber.value in ROOM_NUMBER_CAPACITY) {
-    for (var i = 0; i < adFormCapacity.length; i++) {
-      adFormCapacity[i].disabled = (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].indexOf(adFormCapacity[i].value) < 0);
+  for (var i = 0; i < adFormCapacity.length; i++) {
+    adFormCapacity[i].disabled = (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].indexOf(adFormCapacity[i].value) < 0);
 
-      if (adFormCapacity[i].selected && adFormCapacity[i].disabled) {
-        adFormCapacity.selectedIndex = -1;
-      }
+    if (adFormCapacity[i].selected && adFormCapacity[i].disabled) {
+      adFormCapacity.selectedIndex = -1;
     }
   }
 };
