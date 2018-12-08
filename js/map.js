@@ -17,12 +17,30 @@ var TYPES_RUS = ['Дворец', 'Квартира', 'Дом', 'Бунгало']
 
 var ROOMS_MIN = 1; // комнаты от 1 до 5
 var ROOMS_MAX = 5;
+var ROOM_NUMBER_CAPACITY = {
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0']
+};
 
 var GUESTS_MIN = 1; // случайное кол-во гостей
 var GUESTS_MAX = 10;
 
 var CHECKINS = ['12:00', '13:00', '14:00'];
 var CHECKOUTS = ['12:00', '13:00', '14:00'];
+
+var TIMEIN = {
+  '12:00': '12:00',
+  '13:00': '13:00',
+  '14:00': '14:00'
+};
+
+var TIMEOUT = {
+  '12:00': '12:00',
+  '13:00': '13:00',
+  '14:00': '14:00'
+};
 
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
@@ -61,6 +79,12 @@ var mapFilterFieldset = mapFiltersContainer.querySelectorAll('fieldset');
 var adForm = document.querySelector('.ad-form');
 var adFormFieldset = adForm.querySelectorAll('fieldset');
 var adFormAddress = adForm.querySelector('#address');
+var adFormRoomNumber = adForm.querySelector('#room_number');
+var adFormCapacity = adForm.querySelector('#capacity');
+var adFormType = adForm.querySelector('#type');
+var adFormPrice = adForm.querySelector('#price');
+var adFormTimeIn = adForm.querySelector('#timein');
+var adFormTimeOut = adForm.querySelector('#timeout');
 
 var getRandomNumber = function (min, max) {
   return Math.round(Math.random() * (max - min) + min);
@@ -138,9 +162,8 @@ var createAdsList = function () {
   return adsArray;
 };
 
-var recoveryСurrentAdsItem = function () {
+var recoveryCurrentAdsItem = function () {
   currentAdsItem.classList.remove('map__pin--active');
-  currentAdsItem.style.cursor = 'pointer';
 };
 
 var renderPin = function (pin) {
@@ -156,13 +179,12 @@ var renderPin = function (pin) {
     }
 
     if (currentAdsItem) {
-      recoveryСurrentAdsItem();
+      recoveryCurrentAdsItem();
     }
 
     mapFiltersContainer.before(renderMapCard(pin));
     currentAdsItem = pinElement;
     currentAdsItem.classList.add('map__pin--active');
-    currentAdsItem.style.cursor = 'default';
   });
 
   return pinElement;
@@ -260,7 +282,7 @@ var addAddress = function (extraHeight) {
 
 var closePopup = function () {
   popup.classList.add('hidden');
-  recoveryСurrentAdsItem();
+  recoveryCurrentAdsItem();
   currentAdsItem = null;
   document.removeEventListener('keydown', onPopupEscPress);
 };
@@ -300,6 +322,59 @@ var onMapPinMainMouseUp = function () {
 
   mapPinMain.removeEventListener('mouseup', onMapPinMainMouseUp);
 };
+
+var validationAdFormCapacity = function () {
+  adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
+
+  for (var i = 0; i < ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].length; i++) {
+    if (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value][i] === adFormCapacity.value) {
+      adFormCapacity.setCustomValidity('');
+    }
+  }
+};
+
+var validationAdFormPrice = function () {
+  var min = 0;
+  switch (adFormType.value) {
+    case 'bungalo':
+      min = 0;
+      break;
+    case 'flat':
+      min = 1000;
+      break;
+    case 'house':
+      min = 5000;
+      break;
+    case 'palace':
+      min = 10000;
+      break;
+  }
+  adFormPrice.placeholder = min;
+  adFormPrice.min = min;
+};
+
+var validationAdFormTimeInOut = function (evt, adFormTimeInOut, timeInOut) {
+  for (var i = 0; i < adFormTimeInOut.length; i++) {
+    adFormTimeInOut[i].selected = (timeInOut[evt.target.value] === adFormTimeInOut[i].value);
+  }
+};
+
+var validationAdFormTimeIn = function (evt) {
+  validationAdFormTimeInOut(evt, adFormTimeOut, TIMEIN);
+};
+
+var validationAdFormTimeOut = function (evt) {
+  validationAdFormTimeInOut(evt, adFormTimeIn, TIMEOUT);
+};
+
+adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
+adFormCapacity.addEventListener('input', validationAdFormCapacity);
+adFormType.addEventListener('input', validationAdFormPrice);
+adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
+adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
+
+validationAdFormCapacity();
+validationAdFormPrice();
 
 mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
 
