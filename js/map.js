@@ -42,6 +42,13 @@ var TIMEOUT = {
   '14:00': '14:00'
 };
 
+var TYPES_PRICE_MIN = {
+  'bungalo': 0,
+  'flat': 1000,
+  'house': 5000,
+  'palace': 10000
+};
+
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
@@ -56,6 +63,8 @@ var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной 
 
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
+
+var firstPageActivated = true;
 
 var map = document.querySelector('.map');
 var mapPins = map.querySelector('.map__pins');
@@ -293,7 +302,8 @@ var onPopupEscPress = function (evt) {
   }
 };
 
-var onMapPinMainMouseUp = function () {
+
+var activatePage = function () {
   disabledFilters(false);
   map.classList.remove('map--faded');
   adForm.classList.remove('ad-form--disabled');
@@ -320,7 +330,74 @@ var onMapPinMainMouseUp = function () {
     }
   });
 
-  mapPinMain.removeEventListener('mouseup', onMapPinMainMouseUp);
+  // mapPinMain.removeEventListener('mouseup', onMapPinMainMouseUp);
+};
+
+var onMapPinMainMouseDown = function (evt) {
+  evt.preventDefault();
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var pinMain = {
+    xMin: -Math.round(mapPinMain.offsetWidth / 2),
+    xMax: mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
+    yMin: 0,
+    yMax: mapPins.offsetHeight - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT + 7
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    if (firstPageActivated) {
+      activatePage();
+      firstPageActivated = false;
+    }
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    var finishCoords = {
+      x: mapPinMain.offsetLeft - shift.x,
+      y: mapPinMain.offsetTop - shift.y
+    };
+
+    if (finishCoords.x < pinMain.xMin) {
+      finishCoords.x = pinMain.xMin;
+    } else if (finishCoords.x >= pinMain.xMax) {
+      finishCoords.x = pinMain.xMax;
+    }
+
+    if (finishCoords.y < pinMain.yMin) {
+      finishCoords.y = pinMain.yMin;
+    } else if (finishCoords.y >= pinMain.yMax) {
+      finishCoords.y = pinMain.yMax;
+    }
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    mapPinMain.style.top = finishCoords.y + 'px';
+    mapPinMain.style.left = finishCoords.x + 'px';
+
+    addAddress(PIN_MAIN_ARROW_HEIGHT);
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 };
 
 var validationAdFormCapacity = function () {
@@ -335,20 +412,8 @@ var validationAdFormCapacity = function () {
 
 var validationAdFormPrice = function () {
   var min = 0;
-  switch (adFormType.value) {
-    case 'bungalo':
-      min = 0;
-      break;
-    case 'flat':
-      min = 1000;
-      break;
-    case 'house':
-      min = 5000;
-      break;
-    case 'palace':
-      min = 10000;
-      break;
-  }
+  min = TYPES_PRICE_MIN[adFormType.value];
+
   adFormPrice.placeholder = min;
   adFormPrice.min = min;
 };
@@ -376,7 +441,7 @@ adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
 validationAdFormCapacity();
 validationAdFormPrice();
 
-mapPinMain.addEventListener('mouseup', onMapPinMainMouseUp);
+mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
 
 disabledFilters(true);
 addAddress();
