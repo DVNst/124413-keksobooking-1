@@ -361,27 +361,20 @@ var onMapPinMainMouseDown = function (evt) {
       y: startCoords.y - moveEvt.clientY
     };
 
-    var newCoords = {
+    var finishCoords = {
       x: mapPinMain.offsetLeft - shift.x,
       y: mapPinMain.offsetTop - shift.y
     };
 
-    var finishCoords = {
-      x: newCoords.x,
-      // x: (newCoords.x < pinMain.xMin) ? (pinMain.xMin) : ((newCoords.x >= pinMain.xMax) ? (pinMain.xMax) : (newCoords.x)),
-      y: newCoords.y,
-      // y: (newCoords.y < pinMain.yMin) ? (pinMain.yMin) : ((newCoords.y >= pinMain.yMax) ? (pinMain.yMax) : (newCoords.y))
-    };
-
-    if (newCoords.x < pinMain.xMin) {
+    if (finishCoords.x < pinMain.xMin) {
       finishCoords.x = pinMain.xMin;
-    } else if (newCoords.x >= pinMain.xMax) {
+    } else if (finishCoords.x >= pinMain.xMax) {
       finishCoords.x = pinMain.xMax;
     }
 
-    if (newCoords.y < pinMain.yMin) {
+    if (finishCoords.y < pinMain.yMin) {
       finishCoords.y = pinMain.yMin;
-    } else if (newCoords.y >= pinMain.yMax) {
+    } else if (finishCoords.y >= pinMain.yMax) {
       finishCoords.y = pinMain.yMax;
     }
 
