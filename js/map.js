@@ -42,6 +42,13 @@ var TIMEOUT = {
   '14:00': '14:00'
 };
 
+var TYPES_PRICE_MIN = {
+  'bungalo': 0,
+  'flat': 1000,
+  'house': 5000,
+  'palace': 10000
+};
+
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
@@ -393,20 +400,8 @@ var validationAdFormCapacity = function () {
 
 var validationAdFormPrice = function () {
   var min = 0;
-  switch (adFormType.value) {
-    case 'bungalo':
-      min = 0;
-      break;
-    case 'flat':
-      min = 1000;
-      break;
-    case 'house':
-      min = 5000;
-      break;
-    case 'palace':
-      min = 10000;
-      break;
-  }
+  min = TYPES_PRICE_MIN[adFormType.value];
+
   adFormPrice.placeholder = min;
   adFormPrice.min = min;
 };
