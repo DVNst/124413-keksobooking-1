@@ -1,7 +1,7 @@
 'use strict';
 // модуль, который управляет карточками объявлений и пинами: добавляет на страницу нужную карточку, отрисовывает пины и осуществляет взаимодействие карточки и метки на карте;
 
-  (function () {
+(function () {
 
   var ROOM_NUMBER_CAPACITY = {
     '1': ['1'],
@@ -31,20 +31,18 @@
 
   var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной метки
 
-  var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
 
   var firstPageActivated = true;
 
-  var mapPinMain = mapPins.querySelector('.map__pin--main');
+  var mapPinMain = window.mapPins.querySelector('.map__pin--main');
 
   var ads = [];
 
-
   var popupClose;
 
-  var mapFilter = mapFiltersContainer.querySelectorAll('.map__filter');
-  var mapFilterFieldset = mapFiltersContainer.querySelectorAll('fieldset');
+  var mapFilter = window.mapFiltersContainer.querySelectorAll('.map__filter');
+  var mapFilterFieldset = window.mapFiltersContainer.querySelectorAll('fieldset');
   var adForm = document.querySelector('.ad-form');
   var adFormFieldset = adForm.querySelectorAll('fieldset');
   var adFormAddress = adForm.querySelector('#address');
@@ -59,7 +57,7 @@
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < pins.length; i++) {
-      fragment.appendChild(window.pin.renderPin(pins[i]));
+      fragment.appendChild(window.pin.render(pins[i]));
     }
 
     return fragment;
@@ -82,48 +80,32 @@
     adFormAddress.value = (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
   };
 
-  var closePopup = function () {
-    popup.classList.add('hidden');
-    recoveryCurrentAdsItem();
-    currentAdsItem = null;
-    document.removeEventListener('keydown', onPopupEscPress);
-  };
-
-  var onPopupEscPress = function (evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      closePopup();
-    }
-  };
-
-
   var activatePage = function () {
     disabledFilters(false);
-    map.classList.remove('map--faded');
+    window.map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
 
     addAddress(PIN_MAIN_ARROW_HEIGHT);
 
     ads = window.data.createAdsList();
-    mapPins.appendChild(renderPins(ads));
+    window.mapPins.appendChild(renderPins(ads));
 
-    popup = window.card.renderMapCard(ads[0], true);
-    popup.children[0].classList.add('hidden');
-    mapFiltersContainer.before(popup);
+    window.popup = window.card.render(ads[0], true);
+    window.popup.children[0].classList.add('hidden');
+    window.mapFiltersContainer.before(window.popup);
 
-    popup = document.querySelector('.map__card, .popup');
-    popupClose = popup.querySelector('.popup__close');
+    window.popup = document.querySelector('.map__card, .popup');
+    popupClose = window.popup.querySelector('.popup__close');
 
     popupClose.addEventListener('click', function () {
-      closePopup();
+      window.pin.closePopup();
     });
 
     popupClose.addEventListener('keydown', function (evt) {
       if (evt.keyCode === ENTER_KEYCODE) {
-        closePopup();
+        window.pin.closePopup();
       }
     });
-
-    // mapPinMain.removeEventListener('mouseup', onMapPinMainMouseUp);
   };
 
   var onMapPinMainMouseDown = function (evt) {
@@ -136,9 +118,9 @@
 
     var pinMain = {
       xMin: -Math.round(mapPinMain.offsetWidth / 2),
-      xMax: mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
+      xMax: window.mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
       yMin: 0,
-      yMax: mapPins.offsetHeight - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT + 7
+      yMax: window.mapPins.offsetHeight - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT + 7
     };
 
     var onMouseMove = function (moveEvt) {
@@ -193,6 +175,7 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
+  // формы
   var validationAdFormCapacity = function () {
     adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
 

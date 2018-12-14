@@ -15,10 +15,10 @@
         action();
       }
     },
-    getRandomNumber : function (min, max) {
+    getRandomNumber: function (min, max) {
       return Math.round(Math.random() * (max - min) + min);
     },
-    getShuffledArray : function (arr, length) {
+    getShuffledArray: function (arr, length) {
       var arrMix = [];
 
       if (!length) {
@@ -33,7 +33,7 @@
 
       return arrMix;
     },
-    generateArrayNumber : function (min, max) {
+    generateArrayNumber: function (min, max) {
       if (min > max) {
         max = [min, min = max][0];
       }
@@ -45,7 +45,7 @@
       }
       return arr;
     },
-    getRandomArrayElement : function (arr) {
+    getRandomArrayElement: function (arr) {
       return arr[this.getRandomNumber(0, arr.length - 1)];
     }
   };

@@ -34,10 +34,10 @@
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
   window.map = document.querySelector('.map');
-  window.mapPins = map.querySelector('.map__pins');
+  window.mapPins = window.map.querySelector('.map__pins');
 
-  var pinXMin = Math.round(PIN_WIDTH / 2); // min координата метки по X
-  var pinXMax = mapPins.offsetWidth - Math.round(PIN_WIDTH / 2); // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
+  var pinXMin = Math.round(window.PIN_WIDTH / 2); // min координата метки по X
+  var pinXMax = window.mapPins.offsetWidth - Math.round(window.PIN_WIDTH / 2); // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
   var avatarIndices;
 
@@ -53,7 +53,7 @@
         'title': window.util.getRandomArrayElement(OFFER_TITLES),
         'address': '' + locationX + ', ' + locationY,
         'price': window.util.getRandomNumber(PRICE_MIN, PRICE_MAX),
-        'type': window.util.getRandomArrayElement(TYPES),
+        'type': window.util.getRandomArrayElement(window.TYPES),
         'rooms': window.util.getRandomNumber(ROOMS_MIN, ROOMS_MAX),
         'guests': window.util.getRandomNumber(GUESTS_MIN, GUESTS_MAX),
         'checkin': window.util.getRandomArrayElement(CHECKINS),
@@ -70,7 +70,7 @@
   };
 
   window.data = {
-    createAdsList : function () {
+    createAdsList: function () {
       avatarIndices = window.util.getShuffledArray(window.util.generateArrayNumber(AVATAR_URL_MIN, AVATAR_URL_MAX));
       var adsArray = [];
 

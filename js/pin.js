@@ -8,35 +8,46 @@
   window.mapFiltersContainer = document.querySelector('.map__filters-container');
 
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+  window.popup = null;
 
   var recoveryCurrentAdsItem = function () {
-    currentAdsItem.classList.remove('map__pin--active');
+    window.currentAdsItem.classList.remove('map__pin--active');
+  };
+
+  var onPopupEscPress = function (evt) {
+    window.util.isEscEvent(evt, window.pin.closePopup);
   };
 
   window.pin = {
-    renderPin : function (pin) {
+    closePopup: function () {
+      window.popup.classList.add('hidden');
+      recoveryCurrentAdsItem();
+      window.currentAdsItem = null;
+      document.removeEventListener('keydown', onPopupEscPress);
+    },
+    render: function (pin) {
       var pinElement = pinTemplate.cloneNode(true);
 
-      pinElement.style = 'left: ' + (pin.location.x - Math.round(PIN_WIDTH / 2)) + 'px; top: ' + (pin.location.y - PIN_HEIGHT) + 'px;';
+      pinElement.style = 'left: ' + (pin.location.x - Math.round(window.PIN_WIDTH / 2)) + 'px; top: ' + (pin.location.y - PIN_HEIGHT) + 'px;';
       pinElement.querySelector('img').src = pin.author.avatar;
       pinElement.querySelector('img').alt = pin.offer.description;
 
       pinElement.addEventListener('click', function () {
-        if (pinElement === currentAdsItem) {
+        if (pinElement === window.currentAdsItem) {
           return;
         }
 
-        if (currentAdsItem) {
+        if (window.currentAdsItem) {
           recoveryCurrentAdsItem();
         }
 
-        mapFiltersContainer.before(window.card.renderMapCard(pin));
+        window.mapFiltersContainer.before(window.card.render(pin));
 
-        popup.classList.remove('hidden');
+        window.popup.classList.remove('hidden');
         document.addEventListener('keydown', onPopupEscPress);
 
-        currentAdsItem = pinElement;
-        currentAdsItem.classList.add('map__pin--active');
+        window.currentAdsItem = pinElement;
+        window.currentAdsItem.classList.add('map__pin--active');
       });
 
       return pinElement;
