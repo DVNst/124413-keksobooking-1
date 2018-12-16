@@ -2,36 +2,7 @@
 // модуль, который управляет карточками объявлений и пинами: добавляет на страницу нужную карточку, отрисовывает пины и осуществляет взаимодействие карточки и метки на карте;
 
 (function () {
-
-  var ROOM_NUMBER_CAPACITY = {
-    '1': ['1'],
-    '2': ['1', '2'],
-    '3': ['1', '2', '3'],
-    '100': ['0']
-  };
-
-  var TIMEIN = {
-    '12:00': '12:00',
-    '13:00': '13:00',
-    '14:00': '14:00'
-  };
-
-  var TIMEOUT = {
-    '12:00': '12:00',
-    '13:00': '13:00',
-    '14:00': '14:00'
-  };
-
-  var TYPES_PRICE_MIN = {
-    'bungalo': 0,
-    'flat': 1000,
-    'house': 5000,
-    'palace': 10000
-  };
-
   var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной метки
-
-  var ENTER_KEYCODE = 13;
 
   var firstPageActivated = true;
 
@@ -43,15 +14,6 @@
 
   var mapFilter = window.mapFiltersContainer.querySelectorAll('.map__filter');
   var mapFilterFieldset = window.mapFiltersContainer.querySelectorAll('fieldset');
-  var adForm = document.querySelector('.ad-form');
-  var adFormFieldset = adForm.querySelectorAll('fieldset');
-  var adFormAddress = adForm.querySelector('#address');
-  var adFormRoomNumber = adForm.querySelector('#room_number');
-  var adFormCapacity = adForm.querySelector('#capacity');
-  var adFormType = adForm.querySelector('#type');
-  var adFormPrice = adForm.querySelector('#price');
-  var adFormTimeIn = adForm.querySelector('#timein');
-  var adFormTimeOut = adForm.querySelector('#timeout');
 
   var renderPins = function (pins) {
     var fragment = document.createDocumentFragment();
@@ -72,20 +34,15 @@
   var disabledFilters = function (disabled) {
     addDisabled(mapFilter, disabled);
     addDisabled(mapFilterFieldset, disabled);
-    addDisabled(adFormFieldset, disabled);
-  };
-
-  var addAddress = function (extraHeight) {
-    extraHeight = extraHeight || 0;
-    adFormAddress.value = (mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2)) + ', ' + (mapPinMain.offsetTop + mapPinMain.offsetHeight + extraHeight);
+    addDisabled(window.adFormFieldset, disabled);
   };
 
   var activatePage = function () {
     disabledFilters(false);
     window.map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
+    window.adForm.classList.remove('ad-form--disabled');
 
-    addAddress(PIN_MAIN_ARROW_HEIGHT);
+    window.form.addAddress(mapPinMain, PIN_MAIN_ARROW_HEIGHT);
 
     ads = window.data.createAdsList();
     window.mapPins.appendChild(renderPins(ads));
@@ -98,13 +55,11 @@
     popupClose = window.popup.querySelector('.popup__close');
 
     popupClose.addEventListener('click', function () {
-      window.pin.closePopup();
+      window.card.closePopup();
     });
 
-    popupClose.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === ENTER_KEYCODE) {
-        window.pin.closePopup();
-      }
+    popupClose.addEventListener('keydown', function () {
+      window.card.closePopup();
     });
   };
 
@@ -161,7 +116,7 @@
       mapPinMain.style.top = finishCoords.y + 'px';
       mapPinMain.style.left = finishCoords.x + 'px';
 
-      addAddress(PIN_MAIN_ARROW_HEIGHT);
+      window.form.addAddress(mapPinMain, PIN_MAIN_ARROW_HEIGHT);
     };
 
     var onMouseUp = function (upEvt) {
@@ -175,50 +130,8 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  // формы
-  var validationAdFormCapacity = function () {
-    adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
-
-    for (var i = 0; i < ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].length; i++) {
-      if (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value][i] === adFormCapacity.value) {
-        adFormCapacity.setCustomValidity('');
-      }
-    }
-  };
-
-  var validationAdFormPrice = function () {
-    var min = 0;
-    min = TYPES_PRICE_MIN[adFormType.value];
-
-    adFormPrice.placeholder = min;
-    adFormPrice.min = min;
-  };
-
-  var validationAdFormTimeInOut = function (evt, adFormTimeInOut, timeInOut) {
-    for (var i = 0; i < adFormTimeInOut.length; i++) {
-      adFormTimeInOut[i].selected = (timeInOut[evt.target.value] === adFormTimeInOut[i].value);
-    }
-  };
-
-  var validationAdFormTimeIn = function (evt) {
-    validationAdFormTimeInOut(evt, adFormTimeOut, TIMEIN);
-  };
-
-  var validationAdFormTimeOut = function (evt) {
-    validationAdFormTimeInOut(evt, adFormTimeIn, TIMEOUT);
-  };
-
-  adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
-  adFormCapacity.addEventListener('input', validationAdFormCapacity);
-  adFormType.addEventListener('input', validationAdFormPrice);
-  adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
-  adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
-
-  validationAdFormCapacity();
-  validationAdFormPrice();
-
   mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
 
   disabledFilters(true);
-  addAddress();
+  window.form.addAddress(mapPinMain);
 })();

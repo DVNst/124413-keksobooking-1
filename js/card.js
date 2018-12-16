@@ -5,6 +5,8 @@
   var TYPES_RUS = ['Дворец', 'Квартира', 'Дом', 'Бунгало'];
 
   var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+  window.popup = null;
+  window.currentAdsItem = null;
 
   var getMapCardFeatures = function (pin) {
     var fragment = document.createDocumentFragment();
@@ -37,6 +39,15 @@
   };
 
   window.card = {
+    closePopup: function () {
+      window.popup.classList.add('hidden');
+      window.currentAdsItem.classList.remove('map__pin--active');
+      window.currentAdsItem = null;
+      document.removeEventListener('keydown', window.card.onPopupEscPress);
+    },
+    onPopupEscPress: function (evt) {
+      window.util.isEscEvent(evt, window.card.closePopup);
+    },
     render: function (pin, cloneNode) {
       var fragment = document.createDocumentFragment();
       var mapCardElement = (cloneNode) ? mapCardTemplate.cloneNode(true) : window.popup;

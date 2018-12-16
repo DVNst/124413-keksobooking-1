@@ -4,27 +4,11 @@
 (function () {
   var PIN_HEIGHT = 70; // высота метки
 
-  window.currentAdsItem = null;
   window.mapFiltersContainer = document.querySelector('.map__filters-container');
 
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-  window.popup = null;
-
-  var recoveryCurrentAdsItem = function () {
-    window.currentAdsItem.classList.remove('map__pin--active');
-  };
-
-  var onPopupEscPress = function (evt) {
-    window.util.isEscEvent(evt, window.pin.closePopup);
-  };
 
   window.pin = {
-    closePopup: function () {
-      window.popup.classList.add('hidden');
-      recoveryCurrentAdsItem();
-      window.currentAdsItem = null;
-      document.removeEventListener('keydown', onPopupEscPress);
-    },
     render: function (pin) {
       var pinElement = pinTemplate.cloneNode(true);
 
@@ -38,13 +22,13 @@
         }
 
         if (window.currentAdsItem) {
-          recoveryCurrentAdsItem();
+          window.currentAdsItem.classList.remove('map__pin--active');
         }
 
         window.mapFiltersContainer.before(window.card.render(pin));
 
         window.popup.classList.remove('hidden');
-        document.addEventListener('keydown', onPopupEscPress);
+        document.addEventListener('keydown', window.card.onPopupEscPress);
 
         window.currentAdsItem = pinElement;
         window.currentAdsItem.classList.add('map__pin--active');
