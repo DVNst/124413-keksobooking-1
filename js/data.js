@@ -33,11 +33,8 @@
 
   var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-  window.map = document.querySelector('.map');
-  window.mapPins = window.map.querySelector('.map__pins');
-
   var pinXMin = Math.round(window.PIN_WIDTH / 2); // min координата метки по X
-  var pinXMax = window.mapPins.offsetWidth - Math.round(window.PIN_WIDTH / 2); // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
+  var pinXMax = document.querySelector('.map__pins').offsetWidth - Math.round(window.PIN_WIDTH / 2); // max координата метки по X (Значение ограничено размерами блока, в котором перетаскивается метка.)
 
   var avatarIndices;
 

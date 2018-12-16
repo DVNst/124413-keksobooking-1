@@ -5,8 +5,8 @@
   var TYPES_RUS = ['Дворец', 'Квартира', 'Дом', 'Бунгало'];
 
   var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-  window.popup = null;
-  window.popupClose = null;
+  var popup = null;
+  var popupClose = null;
 
   var getMapCardFeatures = function (pin) {
     var fragment = document.createDocumentFragment();
@@ -40,10 +40,10 @@
 
   window.card = {
     close: function () {
-      window.popup.classList.add('hidden');
+      popup.classList.add('hidden');
       window.pin.closePopup();
-      window.popupClose.removeEventListener('click', window.card.close);
-      window.popupClose.removeEventListener('keydown', window.card.close);
+      popupClose.removeEventListener('click', window.card.close);
+      popupClose.removeEventListener('keydown', window.card.close);
       document.removeEventListener('keydown', window.card.onPopupEscPress);
     },
     onPopupEscPress: function (evt) {
@@ -55,12 +55,13 @@
       if (cloneNode) {
         var mapCardElement = mapCardTemplate.cloneNode(true);
         mapCardElement.classList.add('hidden');
+        popup = mapCardElement;
       } else {
-        mapCardElement = window.popup;
+        mapCardElement = popup;
         mapCardElement.classList.remove('hidden');
-        window.popupClose = mapCardElement.querySelector('.popup__close');
-        window.popupClose.addEventListener('click', window.card.close);
-        window.popupClose.addEventListener('keydown', window.card.close);
+        popupClose = mapCardElement.querySelector('.popup__close');
+        popupClose.addEventListener('click', window.card.close);
+        popupClose.addEventListener('keydown', window.card.close);
         document.addEventListener('keydown', window.card.onPopupEscPress);
       }
 
@@ -81,6 +82,7 @@
       mapCardElement.querySelector('.popup__photos').appendChild(getMapCardPhotos(pin));
 
       fragment.appendChild(mapCardElement);
+      window.mapFiltersContainer.before(fragment);
       return fragment;
     }
   };

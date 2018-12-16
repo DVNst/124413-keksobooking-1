@@ -6,7 +6,9 @@
 
   var firstPageActivated = true;
 
-  var mapPinMain = window.mapPins.querySelector('.map__pin--main');
+  var map = document.querySelector('.map');
+  var mapPins = map.querySelector('.map__pins');
+  var mapPinMain = mapPins.querySelector('.map__pin--main');
 
   var ads = [];
 
@@ -22,18 +24,15 @@
 
   var activatePage = function () {
     window.form.toggleFilters(false);
-    window.map.classList.remove('map--faded');
+    map.classList.remove('map--faded');
     window.adForm.classList.remove('ad-form--disabled');
 
     window.form.addAddress(mapPinMain, PIN_MAIN_ARROW_HEIGHT);
 
     ads = window.data.createAdsList();
-    window.mapPins.appendChild(renderPins(ads));
+    mapPins.appendChild(renderPins(ads));
 
-    window.popup = window.card.render(ads[0], true);
-    window.mapFiltersContainer.before(window.popup);
-
-    window.popup = document.querySelector('.map__card, .popup');
+    window.card.render(ads[0], true);
   };
 
   var onMapPinMainMouseDown = function (evt) {
@@ -46,9 +45,9 @@
 
     var pinMain = {
       xMin: -Math.round(mapPinMain.offsetWidth / 2),
-      xMax: window.mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
+      xMax: mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
       yMin: 0,
-      yMax: window.mapPins.offsetHeight - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT + 7
+      yMax: mapPins.offsetHeight - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT + 7
     };
 
     var onMouseMove = function (moveEvt) {
