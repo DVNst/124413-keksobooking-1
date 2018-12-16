@@ -6,7 +6,7 @@
 
   var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   window.popup = null;
-  window.currentAdsItem = null;
+  window.popupClose = null;
 
   var getMapCardFeatures = function (pin) {
     var fragment = document.createDocumentFragment();
@@ -39,18 +39,30 @@
   };
 
   window.card = {
-    closePopup: function () {
+    close: function () {
       window.popup.classList.add('hidden');
-      window.currentAdsItem.classList.remove('map__pin--active');
-      window.currentAdsItem = null;
+      window.pin.closePopup();
+      window.popupClose.removeEventListener('click', window.card.close);
+      window.popupClose.removeEventListener('keydown', window.card.close);
       document.removeEventListener('keydown', window.card.onPopupEscPress);
     },
     onPopupEscPress: function (evt) {
-      window.util.isEscEvent(evt, window.card.closePopup);
+      window.util.isEscEvent(evt, window.card.close);
     },
     render: function (pin, cloneNode) {
       var fragment = document.createDocumentFragment();
-      var mapCardElement = (cloneNode) ? mapCardTemplate.cloneNode(true) : window.popup;
+
+      if (cloneNode) {
+        var mapCardElement = mapCardTemplate.cloneNode(true);
+        mapCardElement.classList.add('hidden');
+      } else {
+        mapCardElement = window.popup;
+        mapCardElement.classList.remove('hidden');
+        window.popupClose = mapCardElement.querySelector('.popup__close');
+        window.popupClose.addEventListener('click', window.card.close);
+        window.popupClose.addEventListener('keydown', window.card.close);
+        document.addEventListener('keydown', window.card.onPopupEscPress);
+      }
 
       mapCardElement.querySelector('.popup__avatar').src = pin.author.avatar;
       mapCardElement.querySelector('.popup__title').textContent = pin.offer.title;
@@ -69,7 +81,6 @@
       mapCardElement.querySelector('.popup__photos').appendChild(getMapCardPhotos(pin));
 
       fragment.appendChild(mapCardElement);
-
       return fragment;
     }
   };

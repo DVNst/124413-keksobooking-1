@@ -29,7 +29,7 @@
   };
 
   window.adForm = document.querySelector('.ad-form');
-  window.adFormFieldset = window.adForm.querySelectorAll('fieldset');
+  var adFormFieldset = window.adForm.querySelectorAll('fieldset');
   var adFormAddress = window.adForm.querySelector('#address');
   var adFormRoomNumber = window.adForm.querySelector('#room_number');
   var adFormCapacity = window.adForm.querySelector('#capacity');
@@ -37,6 +37,10 @@
   var adFormPrice = window.adForm.querySelector('#price');
   var adFormTimeIn = window.adForm.querySelector('#timein');
   var adFormTimeOut = window.adForm.querySelector('#timeout');
+
+  window.mapFiltersContainer = document.querySelector('.map__filters-container');
+  var mapFilter = window.mapFiltersContainer.querySelectorAll('.map__filter');
+  var mapFilterFieldset = window.mapFiltersContainer.querySelectorAll('fieldset');
 
   var validationAdFormCapacity = function () {
     adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
@@ -49,8 +53,7 @@
   };
 
   var validationAdFormPrice = function () {
-    var min = 0;
-    min = TYPES_PRICE_MIN[adFormType.value];
+    var min = (TYPES_PRICE_MIN[adFormType.value]) ? TYPES_PRICE_MIN[adFormType.value] : 0;
 
     adFormPrice.placeholder = min;
     adFormPrice.min = min;
@@ -70,6 +73,12 @@
     validationAdFormTimeInOut(evt, adFormTimeIn, TIMEOUT);
   };
 
+  var toggleDisabled = function (filters, disabled) {
+    for (var i = 0; i < filters.length; i++) {
+      filters[i].disabled = disabled;
+    }
+  };
+
   adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
   adFormCapacity.addEventListener('input', validationAdFormCapacity);
   adFormType.addEventListener('input', validationAdFormPrice);
@@ -80,6 +89,11 @@
     addAddress: function (pinMain, extraHeight) {
       extraHeight = extraHeight || 0;
       adFormAddress.value = (pinMain.offsetLeft + Math.round(pinMain.offsetWidth / 2)) + ', ' + (pinMain.offsetTop + pinMain.offsetHeight + extraHeight);
+    },
+    toggleFilters: function (disabled) {
+      toggleDisabled(mapFilter, disabled);
+      toggleDisabled(mapFilterFieldset, disabled);
+      toggleDisabled(adFormFieldset, disabled);
     }
   };
 
