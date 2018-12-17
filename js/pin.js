@@ -25,8 +25,7 @@
           activeAdsItem.classList.remove('map__pin--active');
         }
 
-        window.mapFiltersContainer.before(window.card.render(pin));
-
+        window.card.render(pin);
         activeAdsItem = pinElement;
         activeAdsItem.classList.add('map__pin--active');
       });

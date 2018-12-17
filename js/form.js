@@ -28,19 +28,18 @@
     'palace': 10000
   };
 
-  window.adForm = document.querySelector('.ad-form');
-  var adFormFieldset = window.adForm.querySelectorAll('fieldset');
-  var adFormAddress = window.adForm.querySelector('#address');
-  var adFormRoomNumber = window.adForm.querySelector('#room_number');
-  var adFormCapacity = window.adForm.querySelector('#capacity');
-  var adFormType = window.adForm.querySelector('#type');
-  var adFormPrice = window.adForm.querySelector('#price');
-  var adFormTimeIn = window.adForm.querySelector('#timein');
-  var adFormTimeOut = window.adForm.querySelector('#timeout');
+  var adForm = document.querySelector('.ad-form');
+  var adFormFieldset = adForm.querySelectorAll('fieldset');
+  var adFormAddress = adForm.querySelector('#address');
+  var adFormRoomNumber = adForm.querySelector('#room_number');
+  var adFormCapacity = adForm.querySelector('#capacity');
+  var adFormType = adForm.querySelector('#type');
+  var adFormPrice = adForm.querySelector('#price');
+  var adFormTimeIn = adForm.querySelector('#timein');
+  var adFormTimeOut = adForm.querySelector('#timeout');
 
-  window.mapFiltersContainer = document.querySelector('.map__filters-container');
-  var mapFilter = window.mapFiltersContainer.querySelectorAll('.map__filter');
-  var mapFilterFieldset = window.mapFiltersContainer.querySelectorAll('fieldset');
+  var mapFilter = document.querySelectorAll('.map__filter');
+  var mapFilterFieldset = document.querySelectorAll('fieldset');
 
   var validationAdFormCapacity = function () {
     adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
@@ -94,6 +93,9 @@
       toggleDisabled(mapFilter, disabled);
       toggleDisabled(mapFilterFieldset, disabled);
       toggleDisabled(adFormFieldset, disabled);
+    },
+    activate: function () {
+      adForm.classList.remove('ad-form--disabled');
     }
   };
 

@@ -23,10 +23,9 @@
   };
 
   var activatePage = function () {
-    window.form.toggleFilters(false);
     map.classList.remove('map--faded');
-    window.adForm.classList.remove('ad-form--disabled');
-
+    window.form.toggleFilters(false);
+    window.form.activate();
     window.form.addAddress(mapPinMain, PIN_MAIN_ARROW_HEIGHT);
 
     ads = window.data.createAdsList();

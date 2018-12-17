@@ -4,6 +4,7 @@
 (function () {
   var TYPES_RUS = ['Дворец', 'Квартира', 'Дом', 'Бунгало'];
 
+  var mapFiltersContainer = document.querySelector('.map__filters-container');
   var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var popup = null;
   var popupClose = null;
@@ -82,7 +83,7 @@
       mapCardElement.querySelector('.popup__photos').appendChild(getMapCardPhotos(pin));
 
       fragment.appendChild(mapCardElement);
-      window.mapFiltersContainer.before(fragment);
+      mapFiltersContainer.before(fragment);
       return fragment;
     }
   };
