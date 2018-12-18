@@ -22,16 +22,24 @@
     return fragment;
   };
 
+  var onLoad = function (data) {
+    ads = data;
+    mapPins.appendChild(renderPins(ads));
+    window.card.render(ads[0], true);
+  };
+
+  var onError = function (errorMessage) {
+    window.error.render(errorMessage);
+  };
+
   var activatePage = function () {
     map.classList.remove('map--faded');
     window.form.toggleFilters(false);
     window.form.activate();
     window.form.addAddress(mapPinMain, PIN_MAIN_ARROW_HEIGHT);
 
-    ads = window.data.createAdsList();
-    mapPins.appendChild(renderPins(ads));
-
-    window.card.render(ads[0], true);
+    // ads = window.data.createAdsList();
+    window.backend.load(onLoad, onError);
   };
 
   var onMapPinMainMouseDown = function (evt) {

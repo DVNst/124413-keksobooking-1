@@ -84,6 +84,24 @@
   adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
   adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
 
+  var onSave = function () {
+    adFormAddress.defaultValue = adFormAddress.value;
+    adForm.reset();
+  };
+
+  var onError = function (errorMessage) {
+    window.error.render(errorMessage);
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(adForm), onSave, onError);
+  });
+
+  adForm.addEventListener('reset', function () {
+    adFormAddress.defaultValue = adFormAddress.value;
+  });
+
   window.form = {
     addAddress: function (pinMain, extraHeight) {
       extraHeight = extraHeight || 0;
