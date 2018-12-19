@@ -16,8 +16,8 @@
 
   window.TYPES = ['palace', 'flat', 'house', 'bungalo'];
 
-  var PIN_Y_MIN = 130; // координата метки по Y от 130 до 630
-  var PIN_Y_MAX = 630;
+  window.PIN_Y_MIN = 130; // координата метки по Y от 130 до 630
+  window.PIN_Y_MAX = 630;
   window.PIN_WIDTH = 50; // ширина метки
 
   var ROOMS_MIN = 1; // комнаты от 1 до 5
@@ -40,7 +40,7 @@
 
   var generateAds = function (i) {
     var locationX = window.util.getRandomNumber(pinXMin, pinXMax);
-    var locationY = window.util.getRandomNumber(PIN_Y_MIN, PIN_Y_MAX);
+    var locationY = window.util.getRandomNumber(window.PIN_Y_MIN, window.PIN_Y_MAX);
 
     return {
       'author': {

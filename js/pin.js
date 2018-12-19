@@ -32,6 +32,12 @@
 
       return pinElement;
     },
+    delete: function (mapPins) {
+      var pins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+      for (var i = 0; i < pins.length; i++) {
+        pins[i].remove();
+      }
+    },
     closePopup: function () {
       activeAdsItem.classList.remove('map__pin--active');
       activeAdsItem = null;

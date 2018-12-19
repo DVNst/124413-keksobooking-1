@@ -4,11 +4,16 @@
 (function () {
   var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной метки
 
-  var firstPageActivated = true;
+  var pageActivated = false;
+  window.adsUploaded = false;
 
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapPinMain = mapPins.querySelector('.map__pin--main');
+  var mapPinMainCoordinatDefault = {
+    'x': mapPinMain.style.left,
+    'y': mapPinMain.style.top
+  };
 
   var ads = [];
 
@@ -22,6 +27,10 @@
     return fragment;
   };
 
+  var deletePins = function () {
+    window.pin.delete(mapPins);
+  };
+
   var onLoad = function (data) {
     ads = data;
     mapPins.appendChild(renderPins(ads));
@@ -32,14 +41,16 @@
     window.error.render(errorMessage);
   };
 
-  var activatePage = function () {
-    map.classList.remove('map--faded');
-    window.form.toggleFilters(false);
-    window.form.activate();
-    window.form.addAddress(mapPinMain, PIN_MAIN_ARROW_HEIGHT);
+  var activatePage = function (activate) {
+    if (activate) {
+      map.classList.remove('map--faded');
+    } else {
+      map.classList.add('map--faded');
+    }
+    window.form.toggleFilters(!activate);
+    window.form.activate(activate);
 
     // ads = window.data.createAdsList();
-    window.backend.load(onLoad, onError);
   };
 
   var onMapPinMainMouseDown = function (evt) {
@@ -53,16 +64,20 @@
     var pinMain = {
       xMin: -Math.round(mapPinMain.offsetWidth / 2),
       xMax: mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
-      yMin: 0,
-      yMax: mapPins.offsetHeight - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT + 7
+      yMin: window.PIN_Y_MIN - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT,
+      yMax: window.PIN_Y_MAX - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT
     };
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      if (firstPageActivated) {
-        activatePage();
-        firstPageActivated = false;
+      if (!pageActivated) {
+        activatePage(true);
+        pageActivated = true;
+      }
+      if (!window.adsUploaded) {
+        window.adsUploaded = true;
+        window.backend.load(onLoad, onError);
       }
 
       var shift = {
@@ -107,6 +122,19 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  };
+
+  window.map = {
+    deactivatePage: function () {
+      mapPinMain.style.left = mapPinMainCoordinatDefault.x;
+      mapPinMain.style.top = mapPinMainCoordinatDefault.y;
+      window.form.addAddress(mapPinMain);
+
+      deletePins();
+
+      activatePage(false);
+      pageActivated = false;
+    }
   };
 
   mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);

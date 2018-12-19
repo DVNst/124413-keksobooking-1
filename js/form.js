@@ -85,7 +85,6 @@
   adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
 
   var onSave = function () {
-    adFormAddress.defaultValue = adFormAddress.value;
     adForm.reset();
   };
 
@@ -94,11 +93,12 @@
   };
 
   adForm.addEventListener('submit', function (evt) {
-    evt.preventDefault();
     window.backend.save(new FormData(adForm), onSave, onError);
+    evt.preventDefault();
   });
 
   adForm.addEventListener('reset', function () {
+    window.map.deactivatePage();
     adFormAddress.defaultValue = adFormAddress.value;
   });
 
@@ -112,8 +112,12 @@
       toggleDisabled(mapFilterFieldset, disabled);
       toggleDisabled(adFormFieldset, disabled);
     },
-    activate: function () {
-      adForm.classList.remove('ad-form--disabled');
+    activate: function (removeDisabled) {
+      if (removeDisabled) {
+        adForm.classList.remove('ad-form--disabled');
+      } else {
+        adForm.classList.add('ad-form--disabled');
+      }
     }
   };
 
