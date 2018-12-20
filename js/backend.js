@@ -2,8 +2,8 @@
 // экспортирует в глобальную область видимости функции для взаимодействия с удаленным севером через XHR
 
 (function () {
-  var URL_LOAD = 'https://js.dump.academy/keksobooking';
-  var URL_DATA = 'https://js.dump.academy/keksobooking/data';
+  var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
+  var URL_DATA = 'https://js.dump.academy/keksobooking';
 
   var creatXHR = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
