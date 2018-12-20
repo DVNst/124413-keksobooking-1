@@ -44,10 +44,9 @@
   };
 
   var togglePageState = function (activate) {
-    map.classList.toggle('map--faded');
+    map.classList.toggle('map--faded', !activate);
     window.form.toggleFilters(!activate);
-    window.form.toggleFormState();
-
+    window.form.toggleFormState(!activate);
     // ads = window.data.createAdsList();
   };
 
@@ -68,11 +67,11 @@
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-
       if (!pageActivated) {
-        togglePageState(true);
-        pageActivated = true;
+        togglePageState(!pageActivated);
+        pageActivated = !pageActivated;
       }
+
       if (!window.adsUploaded) {
         window.adsUploaded = true;
         window.backend.load(onLoad, onError);
