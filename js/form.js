@@ -112,12 +112,8 @@
       toggleDisabled(mapFilterFieldset, disabled);
       toggleDisabled(adFormFieldset, disabled);
     },
-    activate: function (removeDisabled) {
-      if (removeDisabled) {
-        adForm.classList.remove('ad-form--disabled');
-      } else {
-        adForm.classList.add('ad-form--disabled');
-      }
+    toggleFormState: function () {
+      adForm.classList.toggle('ad-form--disabled');
     }
   };
 

@@ -3,6 +3,8 @@
 
 (function () {
   var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной метки
+  var PIN_Y_MIN = 130;
+  var PIN_Y_MAX = 630;
 
   var pageActivated = false;
   window.adsUploaded = false;
@@ -41,14 +43,10 @@
     window.error.render(errorMessage);
   };
 
-  var activatePage = function (activate) {
-    if (activate) {
-      map.classList.remove('map--faded');
-    } else {
-      map.classList.add('map--faded');
-    }
+  var togglePageState = function (activate) {
+    map.classList.toggle('map--faded');
     window.form.toggleFilters(!activate);
-    window.form.activate(activate);
+    window.form.toggleFormState();
 
     // ads = window.data.createAdsList();
   };
@@ -64,15 +62,15 @@
     var pinMain = {
       xMin: -Math.round(mapPinMain.offsetWidth / 2),
       xMax: mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
-      yMin: window.PIN_Y_MIN - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT,
-      yMax: window.PIN_Y_MAX - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT
+      yMin: PIN_Y_MIN - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT,
+      yMax: PIN_Y_MAX - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT
     };
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
       if (!pageActivated) {
-        activatePage(true);
+        togglePageState(true);
         pageActivated = true;
       }
       if (!window.adsUploaded) {
@@ -132,7 +130,7 @@
 
       deletePins();
 
-      activatePage(false);
+      togglePageState(false);
       pageActivated = false;
     }
   };
