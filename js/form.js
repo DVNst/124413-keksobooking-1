@@ -84,6 +84,24 @@
   adFormTimeIn.addEventListener('input', validationAdFormTimeIn);
   adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
 
+  var onSave = function () {
+    adForm.reset();
+  };
+
+  var onError = function (errorMessage) {
+    window.error.render(errorMessage);
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(adForm), onSave, onError);
+    evt.preventDefault();
+  });
+
+  adForm.addEventListener('reset', function () {
+    window.map.deactivatePage();
+    adFormAddress.defaultValue = adFormAddress.value;
+  });
+
   window.form = {
     addAddress: function (pinMain, extraHeight) {
       extraHeight = extraHeight || 0;
@@ -94,8 +112,8 @@
       toggleDisabled(mapFilterFieldset, disabled);
       toggleDisabled(adFormFieldset, disabled);
     },
-    activate: function () {
-      adForm.classList.remove('ad-form--disabled');
+    toggleFormState: function (disabled) {
+      adForm.classList.toggle('ad-form--disabled', disabled);
     }
   };
 

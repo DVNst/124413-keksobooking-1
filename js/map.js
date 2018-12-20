@@ -3,12 +3,19 @@
 
 (function () {
   var PIN_MAIN_ARROW_HEIGHT = 22; // высота хвостика главной метки
+  var PIN_Y_MIN = 130;
+  var PIN_Y_MAX = 630;
 
-  var firstPageActivated = true;
+  var pageActivated = false;
+  window.adsUploaded = false;
 
   var map = document.querySelector('.map');
   var mapPins = map.querySelector('.map__pins');
   var mapPinMain = mapPins.querySelector('.map__pin--main');
+  var mapPinMainCoordinatDefault = {
+    'x': mapPinMain.style.left,
+    'y': mapPinMain.style.top
+  };
 
   var ads = [];
 
@@ -22,16 +29,25 @@
     return fragment;
   };
 
-  var activatePage = function () {
-    map.classList.remove('map--faded');
-    window.form.toggleFilters(false);
-    window.form.activate();
-    window.form.addAddress(mapPinMain, PIN_MAIN_ARROW_HEIGHT);
+  var deletePins = function () {
+    window.pin.delete(mapPins);
+  };
 
-    ads = window.data.createAdsList();
+  var onLoad = function (data) {
+    ads = data;
     mapPins.appendChild(renderPins(ads));
-
     window.card.render(ads[0], true);
+  };
+
+  var onError = function (errorMessage) {
+    window.error.render(errorMessage);
+  };
+
+  var togglePageState = function (activate) {
+    map.classList.toggle('map--faded', !activate);
+    window.form.toggleFilters(!activate);
+    window.form.toggleFormState(!activate);
+    // ads = window.data.createAdsList();
   };
 
   var onMapPinMainMouseDown = function (evt) {
@@ -45,16 +61,20 @@
     var pinMain = {
       xMin: -Math.round(mapPinMain.offsetWidth / 2),
       xMax: mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
-      yMin: 0,
-      yMax: mapPins.offsetHeight - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT + 7
+      yMin: PIN_Y_MIN - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT,
+      yMax: PIN_Y_MAX - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT
     };
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
+      if (!pageActivated) {
+        togglePageState(!pageActivated);
+        pageActivated = !pageActivated;
+      }
 
-      if (firstPageActivated) {
-        activatePage();
-        firstPageActivated = false;
+      if (!window.adsUploaded) {
+        window.adsUploaded = true;
+        window.backend.load(onLoad, onError);
       }
 
       var shift = {
@@ -99,6 +119,19 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+  };
+
+  window.map = {
+    deactivatePage: function () {
+      mapPinMain.style.left = mapPinMainCoordinatDefault.x;
+      mapPinMain.style.top = mapPinMainCoordinatDefault.y;
+      window.form.addAddress(mapPinMain);
+
+      deletePins();
+
+      togglePageState(false);
+      pageActivated = false;
+    }
   };
 
   mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
