@@ -17,26 +17,9 @@
     'y': mapPinMain.style.top
   };
 
-  var ads = [];
-
-  var renderPins = function (pins) {
-    var fragment = document.createDocumentFragment();
-
-    for (var i = 0; i < pins.length; i++) {
-      fragment.appendChild(window.pin.render(pins[i]));
-    }
-
-    return fragment;
-  };
-
-  var deletePins = function () {
-    window.pin.delete(mapPins);
-  };
-
   var onLoad = function (data) {
-    ads = data;
-    mapPins.appendChild(renderPins(ads));
-    window.card.render(ads[0], true);
+    mapPins.appendChild(window.pin.render(data));
+    window.card.render(data[0], true);
   };
 
   var onError = function (errorMessage) {
@@ -47,7 +30,6 @@
     map.classList.toggle('map--faded', !activate);
     window.form.toggleFilters(!activate);
     window.form.toggleFormState(!activate);
-    // ads = window.data.createAdsList();
   };
 
   var onMapPinMainMouseDown = function (evt) {
@@ -127,10 +109,12 @@
       mapPinMain.style.top = mapPinMainCoordinatDefault.y;
       window.form.addAddress(mapPinMain);
 
-      deletePins();
+      window.pin.delete();
+      window.card.delete();
 
       togglePageState(false);
       pageActivated = false;
+      window.adsUploaded = false;
     }
   };
 

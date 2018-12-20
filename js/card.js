@@ -90,6 +90,9 @@
       fragment.appendChild(mapCardElement);
       mapFiltersContainer.before(fragment);
       return fragment;
+    },
+    delete: function () {
+      popup.remove();
     }
   };
 })();
