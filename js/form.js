@@ -86,6 +86,7 @@
   adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
 
   var onSave = function () {
+    window.save.render();
     adForm.reset();
   };
 
