@@ -45,11 +45,11 @@
   var validationAdFormCapacity = function () {
     adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
 
-    for (var i = 0; i < CapacityToRoomNumber[adFormRoomNumber.value].length; i++) {
-      if (CapacityToRoomNumber[adFormRoomNumber.value][i] === adFormCapacity.value) {
+    CapacityToRoomNumber[adFormRoomNumber.value].forEach(function (item) {
+      if (item === adFormCapacity.value) {
         adFormCapacity.setCustomValidity('');
       }
-    }
+    });
   };
 
   var validationAdFormPrice = function () {
@@ -74,9 +74,9 @@
   };
 
   var toggleDisabled = function (filters, disabled) {
-    for (var i = 0; i < filters.length; i++) {
-      filters[i].disabled = !disabled;
-    }
+    filters.forEach(function (item) {
+      item.disabled = !disabled;
+    });
   };
 
   adFormRoomNumber.addEventListener('input', validationAdFormCapacity);

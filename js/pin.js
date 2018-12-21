@@ -104,9 +104,9 @@
     },
     delete: function () {
       var pinList = window.mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
-      for (var i = 0; i < pinList.length; i++) {
-        pinList[i].remove();
-      }
+      pinList.forEach(function (item) {
+        item.remove();
+      });
     },
     closePopup: function () {
       if (activeAdsItem) {

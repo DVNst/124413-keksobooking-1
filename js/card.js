@@ -17,12 +17,12 @@
   var getMapCardFeatures = function (pin) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < pin.offer.features.length; i++) {
+    pin.offer.features.forEach(function (item) {
       var feature = document.createElement('li');
-      feature.className = 'popup__feature' + ' popup__feature--' + pin.offer.features[i];
+      feature.className = 'popup__feature' + ' popup__feature--' + item;
 
       fragment.appendChild(feature);
-    }
+    });
 
     return fragment;
   };
@@ -30,16 +30,16 @@
   var getMapCardPhotos = function (pin) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < pin.offer.photos.length; i++) {
+    pin.offer.photos.forEach(function (item) {
       var image = document.createElement('img');
-      image.src = pin.offer.photos[i];
+      image.src = item;
       image.className = 'popup__photo';
       image.width = '45';
       image.height = '40';
       image.alt = 'Фотография жилья';
 
       fragment.appendChild(image);
-    }
+    });
 
     return fragment;
   };
