@@ -2,7 +2,7 @@
 // (map.js) модуль, который отвечает за создание карточки объявлений;
 
 (function () {
-  var typeRusToTypeENG = {
+  var TypeRusToTypeENG = {
     'palace': 'Дворец',
     'flat': 'Квартира',
     'house': 'Дом',
@@ -75,7 +75,7 @@
       mapCardElement.querySelector('.popup__title').textContent = pin.offer.title;
       mapCardElement.querySelector('.popup__text--address').textContent = pin.offer.address;
       mapCardElement.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
-      mapCardElement.querySelector('.popup__type').textContent = typeRusToTypeENG[pin.offer.type];
+      mapCardElement.querySelector('.popup__type').textContent = TypeRusToTypeENG[pin.offer.type];
       mapCardElement.querySelector('.popup__text--capacity').textContent = pin.offer.rooms + ' комнаты для ' + pin.offer.guests + ' гостей';
       mapCardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
 

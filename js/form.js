@@ -2,26 +2,26 @@
 // модуль, который работает с формой объявления.
 
 (function () {
-  var ROOM_NUMBER_CAPACITY = {
+  var CapacityToRoomNumber = {
     '1': ['1'],
     '2': ['1', '2'],
     '3': ['1', '2', '3'],
     '100': ['0']
   };
 
-  var TIMEIN = {
+  var TimeInToTimeOut = {
     '12:00': '12:00',
     '13:00': '13:00',
     '14:00': '14:00'
   };
 
-  var TIMEOUT = {
+  var TimeOutToTimeIn = {
     '12:00': '12:00',
     '13:00': '13:00',
     '14:00': '14:00'
   };
 
-  var TYPES_PRICE_MIN = {
+  var PriceMinToTypes = {
     'bungalo': 0,
     'flat': 1000,
     'house': 5000,
@@ -45,15 +45,15 @@
   var validationAdFormCapacity = function () {
     adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
 
-    for (var i = 0; i < ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].length; i++) {
-      if (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value][i] === adFormCapacity.value) {
+    for (var i = 0; i < CapacityToRoomNumber[adFormRoomNumber.value].length; i++) {
+      if (CapacityToRoomNumber[adFormRoomNumber.value][i] === adFormCapacity.value) {
         adFormCapacity.setCustomValidity('');
       }
     }
   };
 
   var validationAdFormPrice = function () {
-    var min = (TYPES_PRICE_MIN[adFormType.value]) ? TYPES_PRICE_MIN[adFormType.value] : 0;
+    var min = (PriceMinToTypes[adFormType.value]) ? PriceMinToTypes[adFormType.value] : 0;
 
     adFormPrice.placeholder = min;
     adFormPrice.min = min;
@@ -66,11 +66,11 @@
   };
 
   var validationAdFormTimeIn = function (evt) {
-    validationAdFormTimeInOut(evt, adFormTimeOut, TIMEIN);
+    validationAdFormTimeInOut(evt, adFormTimeOut, TimeInToTimeOut);
   };
 
   var validationAdFormTimeOut = function (evt) {
-    validationAdFormTimeInOut(evt, adFormTimeIn, TIMEOUT);
+    validationAdFormTimeInOut(evt, adFormTimeIn, TimeOutToTimeIn);
   };
 
   var toggleDisabled = function (filters, disabled) {
