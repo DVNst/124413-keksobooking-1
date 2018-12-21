@@ -25,6 +25,7 @@
   var onLoad = function (data) {
     window.pin.render(data);
     window.card.render(data[0], true);
+    window.form.toggleFilters(true);
   };
 
   var onError = function (errorMessage) {
@@ -33,8 +34,7 @@
 
   var togglePageState = function (activate) {
     map.classList.toggle('map--faded', !activate);
-    window.form.toggleFilters(!activate);
-    window.form.toggleFormState(!activate);
+    window.form.toggleFormState(activate);
   };
 
   var onMapPinMainMouseDown = function (evt) {
@@ -128,6 +128,7 @@
 
   mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
 
-  window.form.toggleFilters(true);
+  window.form.toggleFilters(false);
+  window.form.toggleFormState(false);
   window.form.addAddress(window.mapPinMainCoordinates);
 })();

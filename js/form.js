@@ -38,10 +38,9 @@
   var adFormTimeIn = adForm.querySelector('#timein');
   var adFormTimeOut = adForm.querySelector('#timeout');
 
-  var mapFilter = document.querySelectorAll('.map__filter');
-  var mapFilterFieldset = document.querySelectorAll('fieldset');
-
   var mapFilters = document.querySelector('.map__filters');
+  var mapFilter = mapFilters.querySelectorAll('.map__filter');
+  var mapFilterFieldset = mapFilters.querySelectorAll('fieldset');
 
   var validationAdFormCapacity = function () {
     adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
@@ -76,7 +75,7 @@
 
   var toggleDisabled = function (filters, disabled) {
     for (var i = 0; i < filters.length; i++) {
-      filters[i].disabled = disabled;
+      filters[i].disabled = !disabled;
     }
   };
 
@@ -113,10 +112,10 @@
     toggleFilters: function (disabled) {
       toggleDisabled(mapFilter, disabled);
       toggleDisabled(mapFilterFieldset, disabled);
-      toggleDisabled(adFormFieldset, disabled);
     },
     toggleFormState: function (disabled) {
-      adForm.classList.toggle('ad-form--disabled', disabled);
+      adForm.classList.toggle('ad-form--disabled', !disabled);
+      toggleDisabled(adFormFieldset, disabled);
     }
   };
 
