@@ -9,13 +9,13 @@
   var priceMinToTypePrice = {
     'middle': 10000,
     'low': 0,
-    'high': 0
+    'high': 50000
   };
 
   var priceMaxToTypePrice = {
     'middle': 50000,
     'low': 10000,
-    'high': 50000
+    'high': Infinity
   };
 
   var pins = null;
@@ -50,14 +50,14 @@
   };
 
   var getDistance = function (pin) {
-    return Math.sqrt(Math.pow(window.mapPinMainCoordinat.x - pin.location.x, 2) + Math.pow(window.mapPinMainCoordinat.y - pin.location.y, 2));
+    return Math.sqrt(Math.pow(window.mapPinMainCoordinates.x - pin.location.x, 2) + Math.pow(window.mapPinMainCoordinates.y - pin.location.y, 2));
   };
 
   window.pin = {
     render: function (data) {
       var fragment = document.createDocumentFragment();
       var takeNumber = data.length > PIN_QUANTITY ? PIN_QUANTITY : data.length;
-      if (pins === null) {
+      if (!pins) {
         pins = data;
       }
 
@@ -75,19 +75,19 @@
       });
 
       pinsNew = pinsNew.filter(function (pin) {
-        return (type === 'any') ? pin : (pin.offer.type === type);
+        return (type === 'any') ? true : (pin.offer.type === type);
       });
 
       pinsNew = pinsNew.filter(function (pin) {
-        return (price === 'any') ? pin : (pin.offer.price >= priceMinToTypePrice[price] && pin.offer.price <= priceMaxToTypePrice[price]);
+        return (price === 'any') ? true : (pin.offer.price >= priceMinToTypePrice[price] && pin.offer.price <= priceMaxToTypePrice[price]);
       });
 
       pinsNew = pinsNew.filter(function (pin) {
-        return (rooms === 'any') ? pin : (pin.offer.rooms === Number(rooms));
+        return (rooms === 'any') ? true : (pin.offer.rooms === Number(rooms));
       });
 
       pinsNew = pinsNew.filter(function (pin) {
-        return (guests === 'any') ? pin : (pin.offer.guests === Number(guests));
+        return (guests === 'any') ? true : (pin.offer.guests === Number(guests));
       });
 
       if (features.length > 0) {
@@ -109,7 +109,7 @@
       }
     },
     closePopup: function () {
-      if (activeAdsItem !== null) {
+      if (activeAdsItem) {
         activeAdsItem.classList.remove('map__pin--active');
         activeAdsItem = null;
       }
