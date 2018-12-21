@@ -2,7 +2,7 @@
 // (map.js) модуль, который отвечает за создание карточки объявлений;
 
 (function () {
-  var typeRusToTypeENG = {
+  var TypeRusToTypeENG = {
     'palace': 'Дворец',
     'flat': 'Квартира',
     'house': 'Дом',
@@ -17,12 +17,12 @@
   var getMapCardFeatures = function (pin) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < pin.offer.features.length; i++) {
+    pin.offer.features.forEach(function (item) {
       var feature = document.createElement('li');
-      feature.className = 'popup__feature' + ' popup__feature--' + pin.offer.features[i];
+      feature.className = 'popup__feature' + ' popup__feature--' + item;
 
       fragment.appendChild(feature);
-    }
+    });
 
     return fragment;
   };
@@ -30,16 +30,16 @@
   var getMapCardPhotos = function (pin) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < pin.offer.photos.length; i++) {
+    pin.offer.photos.forEach(function (item) {
       var image = document.createElement('img');
-      image.src = pin.offer.photos[i];
+      image.src = item;
       image.className = 'popup__photo';
       image.width = '45';
       image.height = '40';
       image.alt = 'Фотография жилья';
 
       fragment.appendChild(image);
-    }
+    });
 
     return fragment;
   };
@@ -75,7 +75,7 @@
       mapCardElement.querySelector('.popup__title').textContent = pin.offer.title;
       mapCardElement.querySelector('.popup__text--address').textContent = pin.offer.address;
       mapCardElement.querySelector('.popup__text--price').textContent = pin.offer.price + '₽/ночь';
-      mapCardElement.querySelector('.popup__type').textContent = typeRusToTypeENG[pin.offer.type];
+      mapCardElement.querySelector('.popup__type').textContent = TypeRusToTypeENG[pin.offer.type];
       mapCardElement.querySelector('.popup__text--capacity').textContent = pin.offer.rooms + ' комнаты для ' + pin.offer.guests + ' гостей';
       mapCardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + pin.offer.checkin + ', выезд до ' + pin.offer.checkout;
 
@@ -90,6 +90,9 @@
       fragment.appendChild(mapCardElement);
       mapFiltersContainer.before(fragment);
       return fragment;
+    },
+    delete: function () {
+      popup.remove();
     }
   };
 })();

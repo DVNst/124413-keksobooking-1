@@ -2,26 +2,26 @@
 // модуль, который работает с формой объявления.
 
 (function () {
-  var ROOM_NUMBER_CAPACITY = {
+  var CapacityToRoomNumber = {
     '1': ['1'],
     '2': ['1', '2'],
     '3': ['1', '2', '3'],
     '100': ['0']
   };
 
-  var TIMEIN = {
+  var TimeInToTimeOut = {
     '12:00': '12:00',
     '13:00': '13:00',
     '14:00': '14:00'
   };
 
-  var TIMEOUT = {
+  var TimeOutToTimeIn = {
     '12:00': '12:00',
     '13:00': '13:00',
     '14:00': '14:00'
   };
 
-  var TYPES_PRICE_MIN = {
+  var PriceMinToTypes = {
     'bungalo': 0,
     'flat': 1000,
     'house': 5000,
@@ -38,21 +38,22 @@
   var adFormTimeIn = adForm.querySelector('#timein');
   var adFormTimeOut = adForm.querySelector('#timeout');
 
-  var mapFilter = document.querySelectorAll('.map__filter');
-  var mapFilterFieldset = document.querySelectorAll('fieldset');
+  var mapFilters = document.querySelector('.map__filters');
+  var mapFilter = mapFilters.querySelectorAll('.map__filter');
+  var mapFilterFieldset = mapFilters.querySelectorAll('fieldset');
 
   var validationAdFormCapacity = function () {
     adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
 
-    for (var i = 0; i < ROOM_NUMBER_CAPACITY[adFormRoomNumber.value].length; i++) {
-      if (ROOM_NUMBER_CAPACITY[adFormRoomNumber.value][i] === adFormCapacity.value) {
+    CapacityToRoomNumber[adFormRoomNumber.value].forEach(function (item) {
+      if (item === adFormCapacity.value) {
         adFormCapacity.setCustomValidity('');
       }
-    }
+    });
   };
 
   var validationAdFormPrice = function () {
-    var min = (TYPES_PRICE_MIN[adFormType.value]) ? TYPES_PRICE_MIN[adFormType.value] : 0;
+    var min = (PriceMinToTypes[adFormType.value]) ? PriceMinToTypes[adFormType.value] : 0;
 
     adFormPrice.placeholder = min;
     adFormPrice.min = min;
@@ -65,17 +66,17 @@
   };
 
   var validationAdFormTimeIn = function (evt) {
-    validationAdFormTimeInOut(evt, adFormTimeOut, TIMEIN);
+    validationAdFormTimeInOut(evt, adFormTimeOut, TimeInToTimeOut);
   };
 
   var validationAdFormTimeOut = function (evt) {
-    validationAdFormTimeInOut(evt, adFormTimeIn, TIMEOUT);
+    validationAdFormTimeInOut(evt, adFormTimeIn, TimeOutToTimeIn);
   };
 
   var toggleDisabled = function (filters, disabled) {
-    for (var i = 0; i < filters.length; i++) {
-      filters[i].disabled = disabled;
-    }
+    filters.forEach(function (item) {
+      item.disabled = !disabled;
+    });
   };
 
   adFormRoomNumber.addEventListener('input', validationAdFormCapacity);
@@ -85,6 +86,7 @@
   adFormTimeOut.addEventListener('input', validationAdFormTimeOut);
 
   var onSave = function () {
+    window.save.render();
     adForm.reset();
   };
 
@@ -98,22 +100,23 @@
   });
 
   adForm.addEventListener('reset', function () {
+    mapFilters.reset();
     window.map.deactivatePage();
     adFormAddress.defaultValue = adFormAddress.value;
   });
 
   window.form = {
-    addAddress: function (pinMain, extraHeight) {
-      extraHeight = extraHeight || 0;
-      adFormAddress.value = (pinMain.offsetLeft + Math.round(pinMain.offsetWidth / 2)) + ', ' + (pinMain.offsetTop + pinMain.offsetHeight + extraHeight);
+    addAddress: function (mapPinMain) {
+      // extraHeight = extraHeight || 0;
+      adFormAddress.value = mapPinMain.x + ', ' + mapPinMain.y;
     },
     toggleFilters: function (disabled) {
       toggleDisabled(mapFilter, disabled);
       toggleDisabled(mapFilterFieldset, disabled);
-      toggleDisabled(adFormFieldset, disabled);
     },
     toggleFormState: function (disabled) {
-      adForm.classList.toggle('ad-form--disabled', disabled);
+      adForm.classList.toggle('ad-form--disabled', !disabled);
+      toggleDisabled(adFormFieldset, disabled);
     }
   };
 
