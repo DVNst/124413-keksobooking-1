@@ -5,7 +5,7 @@
   var URL_LOAD = 'https://js.dump.academy/keksobooking/data';
   var URL_DATA = 'https://js.dump.academy/keksobooking';
 
-  var creatXHR = function (onLoad, onError) {
+  var createXHR = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
 
@@ -30,12 +30,12 @@
 
   window.backend = {
     save: function (data, onLoad, onError) {
-      var xhr = creatXHR(onLoad, onError);
+      var xhr = createXHR(onLoad, onError);
       xhr.open('POST', URL_DATA);
       xhr.send(data);
     },
     load: function (onLoad, onError) {
-      var xhr = creatXHR(onLoad, onError);
+      var xhr = createXHR(onLoad, onError);
       xhr.open('GET', URL_LOAD);
       xhr.send();
     }
