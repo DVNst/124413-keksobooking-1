@@ -41,6 +41,8 @@
   var mapFilter = document.querySelectorAll('.map__filter');
   var mapFilterFieldset = document.querySelectorAll('fieldset');
 
+  var mapFilters = document.querySelector('.map__filters');
+
   var validationAdFormCapacity = function () {
     adFormCapacity.setCustomValidity('Количество гостей не соответсвует количеству комнат');
 
@@ -98,6 +100,7 @@
   });
 
   adForm.addEventListener('reset', function () {
+    mapFilters.reset();
     window.map.deactivatePage();
     adFormAddress.defaultValue = adFormAddress.value;
   });

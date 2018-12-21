@@ -1,12 +1,11 @@
 'use strict';
 
 (function () {
-  var mapFilters = document.querySelector('.map__filters');
-  var housingType = mapFilters.querySelector('#housing-type');
-  var housingPrice = mapFilters.querySelector('#housing-price');
-  var housingRooms = mapFilters.querySelector('#housing-rooms');
-  var housingGuests = mapFilters.querySelector('#housing-guests');
-  var housingFeatures = mapFilters.querySelector('#housing-features');
+  var housingType = document.querySelector('#housing-type');
+  var housingPrice = document.querySelector('#housing-price');
+  var housingRooms = document.querySelector('#housing-rooms');
+  var housingGuests = document.querySelector('#housing-guests');
+  var housingFeatures = document.querySelector('#housing-features');
 
   var features = [];
 
