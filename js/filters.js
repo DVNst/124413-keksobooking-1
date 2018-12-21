@@ -9,26 +9,26 @@
 
   var features = [];
 
-  var pinsUpdate = function () {
+  var updatePins = function () {
     window.pin.delete();
     window.card.delete();
     window.pin.update(housingType.value, housingPrice.value, housingRooms.value, housingGuests.value, features);
   };
 
   housingType.addEventListener('input', function () {
-    window.debounce(pinsUpdate);
+    window.debounce(updatePins);
   });
 
   housingPrice.addEventListener('input', function () {
-    window.debounce(pinsUpdate);
+    window.debounce(updatePins);
   });
 
   housingRooms.addEventListener('input', function () {
-    window.debounce(pinsUpdate);
+    window.debounce(updatePins);
   });
 
   housingGuests.addEventListener('input', function () {
-    window.debounce(pinsUpdate);
+    window.debounce(updatePins);
   });
 
   housingFeatures.addEventListener('input', function () {
@@ -37,10 +37,10 @@
     featuresList.forEach(function (item) {
       features.push(item.value);
     });
-    window.debounce(pinsUpdate);
+    window.debounce(updatePins);
   });
 
   window.filters = function () {
-    window.debounce(pinsUpdate);
+    window.debounce(updatePins);
   };
 })();

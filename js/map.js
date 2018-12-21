@@ -98,7 +98,6 @@
       window.mapPinMainCoordinates.y = mapPinMain.offsetTop + mapPinMain.offsetHeight + PIN_MAIN_ARROW_HEIGHT;
 
       window.form.addAddress(window.mapPinMainCoordinates);
-      window.filters();
     };
 
     var onDocumentMouseUp = function (upEvt) {

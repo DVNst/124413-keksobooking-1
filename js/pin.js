@@ -75,19 +75,19 @@
       });
 
       pinsNew = pinsNew.filter(function (pin) {
-        return (type === 'any') ? true : (pin.offer.type === type);
+        return (type === 'any') || (pin.offer.type === type);
       });
 
       pinsNew = pinsNew.filter(function (pin) {
-        return (price === 'any') ? true : (pin.offer.price >= priceMinToTypePrice[price] && pin.offer.price <= priceMaxToTypePrice[price]);
+        return (price === 'any') || (pin.offer.price >= priceMinToTypePrice[price] && pin.offer.price <= priceMaxToTypePrice[price]);
       });
 
       pinsNew = pinsNew.filter(function (pin) {
-        return (rooms === 'any') ? true : (pin.offer.rooms === Number(rooms));
+        return (rooms === 'any') || (pin.offer.rooms === Number(rooms));
       });
 
       pinsNew = pinsNew.filter(function (pin) {
-        return (guests === 'any') ? true : (pin.offer.guests === Number(guests));
+        return (guests === 'any') || (pin.offer.guests === Number(guests));
       });
 
       if (features.length > 0) {
