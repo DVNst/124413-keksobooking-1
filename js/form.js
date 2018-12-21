@@ -103,9 +103,9 @@
   });
 
   window.form = {
-    addAddress: function (pinMain, extraHeight) {
-      extraHeight = extraHeight || 0;
-      adFormAddress.value = (pinMain.offsetLeft + Math.round(pinMain.offsetWidth / 2)) + ', ' + (pinMain.offsetTop + pinMain.offsetHeight + extraHeight);
+    addAddress: function (mapPinMain) {
+      // extraHeight = extraHeight || 0;
+      adFormAddress.value = mapPinMain.x + ', ' + mapPinMain.y;
     },
     toggleFilters: function (disabled) {
       toggleDisabled(mapFilter, disabled);

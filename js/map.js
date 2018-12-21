@@ -10,15 +10,20 @@
   window.adsUploaded = false;
 
   var map = document.querySelector('.map');
-  var mapPins = map.querySelector('.map__pins');
-  var mapPinMain = mapPins.querySelector('.map__pin--main');
+  window.mapPins = map.querySelector('.map__pins');
+  var mapPinMain = window.mapPins.querySelector('.map__pin--main');
+
+  window.mapPinMainCoordinat = {
+    'x': mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2),
+    'y': mapPinMain.offsetTop + mapPinMain.offsetHeight
+  };
   var mapPinMainCoordinatDefault = {
     'x': mapPinMain.style.left,
     'y': mapPinMain.style.top
   };
 
   var onLoad = function (data) {
-    mapPins.appendChild(window.pin.render(data));
+    window.pin.render(data);
     window.card.render(data[0], true);
   };
 
@@ -42,7 +47,7 @@
 
     var pinMain = {
       xMin: -Math.round(mapPinMain.offsetWidth / 2),
-      xMax: mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
+      xMax: window.mapPins.offsetWidth - Math.round(mapPinMain.offsetWidth / 2),
       yMin: PIN_Y_MIN - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT,
       yMax: PIN_Y_MAX - mapPinMain.offsetHeight - PIN_MAIN_ARROW_HEIGHT
     };
@@ -89,7 +94,11 @@
       mapPinMain.style.top = finishCoords.y + 'px';
       mapPinMain.style.left = finishCoords.x + 'px';
 
-      window.form.addAddress(mapPinMain, PIN_MAIN_ARROW_HEIGHT);
+      window.mapPinMainCoordinat.x = mapPinMain.offsetLeft + Math.round(mapPinMain.offsetWidth / 2);
+      window.mapPinMainCoordinat.y = mapPinMain.offsetTop + mapPinMain.offsetHeight + PIN_MAIN_ARROW_HEIGHT;
+
+      window.form.addAddress(window.mapPinMainCoordinat);
+      window.filters();
     };
 
     var onMouseUp = function (upEvt) {
@@ -121,5 +130,5 @@
   mapPinMain.addEventListener('mousedown', onMapPinMainMouseDown);
 
   window.form.toggleFilters(true);
-  window.form.addAddress(mapPinMain);
+  window.form.addAddress(window.mapPinMainCoordinat);
 })();
