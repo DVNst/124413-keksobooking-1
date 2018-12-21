@@ -39,8 +39,4 @@
     });
     window.debounce(updatePins);
   });
-
-  window.filters = function () {
-    window.debounce(updatePins);
-  };
 })();
