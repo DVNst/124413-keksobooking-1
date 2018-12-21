@@ -8,9 +8,6 @@
       if (evt.keyCode === ESC_KEYCODE) {
         action();
       }
-    },
-    getRandomNumber: function (min, max) {
-      return Math.round(Math.random() * (max - min) + min);
     }
   };
 })();
